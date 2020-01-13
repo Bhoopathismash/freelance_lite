@@ -14,3 +14,10 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/about', 'StaticController@about')->name('about');
+Route::get('/faq', 'StaticController@faq')->name('faq');
+Route::get('/contact', 'StaticController@contact')->name('contact');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

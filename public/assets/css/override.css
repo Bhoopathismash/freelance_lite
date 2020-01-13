@@ -1,0 +1,12 @@
+.navbar-brand, .slicknav_brand{
+    width:256px;
+}
+@media (max-width : 850px){
+    .slicknav_brand{
+        width:50px;
+    }
+}
+
+.footer-logo{
+    width:75%;
+}
