@@ -16,5 +16,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/main.css')}}">    
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/override.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/summernote.css')}}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <link href="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
     
     <?php $pageurl = basename($_SERVER['PHP_SELF']);  ?>

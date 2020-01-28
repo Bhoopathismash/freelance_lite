@@ -1,4 +1,4 @@
-@extends('layouts.base')
+@extends('layouts.auth')
 
 @section('content')
   <!-- Page Header Start -->
@@ -26,6 +26,7 @@
               </h3>
               <div id="response"></div>
                 <form method="POST" action="{{ route('register') }}" class="login-form">
+                    @csrf
                     <div class="form-group">
                       <div class="input-icon">
                         <i class="lni-user"></i>
@@ -68,7 +69,18 @@
                         <i class="lni-unlock"></i>
                         <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required placeholder="Retype Password">
                       </div>
-                    </div>                 
+                    </div>     
+
+                    <div class="form-group">
+                      <div class="input-icon">
+                        <label>Want to work</label>
+                        <input id="user_type1" type="radio" class="form-control" name="user_type" required value="2">
+
+                         <label>Want to hire</label>
+                        <input id="user_type2" type="radio" class="form-control" name="user_type" required value="1">
+                      </div>
+                    </div>  
+
                     <button class="btn btn-common log-btn mt-3" type="submit" >Register</button>
                     <p class="text-center">Already have an account?<a href="login"> Sign In</a></p>
                 </form>

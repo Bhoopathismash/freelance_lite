@@ -10,7 +10,9 @@
     <!-- Header Section Start -->
     <header id="home" class="hero-area">
 		@include('include.nav')
-   		@yield('home_content')
+    @include('common.notify')
+
+   	@yield('home_content')
                
     </header>
     <!-- Header Section End --> 
