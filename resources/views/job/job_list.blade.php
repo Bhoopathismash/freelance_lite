@@ -16,56 +16,65 @@
     <!-- Page Header End -->  
 
     <!-- Content section Start --> 
-    <section class="section">
+    <section class="job-browse section">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-lg-12 col-md-12 col-xs-12">
-            <div class="post-job box">
-              <h3 class="job-title">Job List</h3>
-              
-              <div class="table-responsive">
-                <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Job Title</th>
-                            <th>Company Name</th>                            
-                            <th>Category</th>                            
-                            <th>Status</th>                            
-                            <th>Action</th>                            
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Job Title</th>
-                            <th>Company Name</th>                            
-                            <th>Category</th>                            
-                            <th>Status</th>                            
-                            <th>Action</th>                         
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        @foreach($jobs as $index => $value)
-                        <tr>
-                            <td>{{$index +1}}</td>
-                            <td>{{$value->job_title}}</td>
-                            <td>{{$value->company_name}}</td>
-                            <td>{{$value->category->category_name}}</td>
-                            <td>@if($value->status==0) Not Started @elseif($value->status==0) Biding @elseif($value->status==0)Started @elseif($value->status==0) Finished @endif</td>
-                            <td>
-                              @if(Auth::user()->user_type==1)
-                                <a href="{{route('editPost',$value->id)}}" class="btn btn-info">Edit</a>
-                              @endif
-                              <a href="{{route('viewPost',$value->id)}}" class="btn btn-info">View</a>
-                            </td>                    
-                        </tr>  
-                        @endforeach                      
-                    </tbody>
-                </table>
+            <form action="{{route('jobList')}}" method="GET">
+            <div class="wrap-search-filter row">
+                <div class="col-lg-5 col-md-5 col-xs-12">
+                  <input type="text" class="form-control" placeholder="Keyword: Name, Tag" name="keyword">
+                </div>
+                <div class="col-lg-5 col-md-5 col-xs-12">
+                  <input type="text" class="form-control" placeholder="Location: City, State, Zip" name="location">
+                </div>
+                <div class="col-lg-2 col-md-2 col-xs-12">
+                  <button type="submit" class="btn btn-common float-right">Filter</button>
+                </div>
             </div>
+            </form>
+          </div>
+           <div class="col-lg-12 col-md-12 col-xs-12">
+            @foreach($jobs as $index => $value)
+              <div class="job-listings">
+                <div class="row">
+                  <div class="col-lg-4 col-md-4 col-xs-12">
+                    <div class="job-company-logo">
+                      <img src="assets/img/features/img1.png" alt="">
+                    </div>
+                    <div class="job-details">
+                      <h3>{{$value->job_title}}</h3>
+                      <span class="company-neme">
+                        {{@$value->company_name}}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-xs-12 text-center">
+                    @if($value->category)
+                      <span class="btn-open">
+                        {{$value->category->category_name}}
+                      </span>
+                    @endif
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-xs-12 text-right">
+                   <div class="location">
+                     <i class="lni-map-marker"></i> {{@$value->location}}
+                   </div>
+                  </div>
+                  
+                  <div class="col-lg-4 col-md-4 col-xs-12 text-right">
+                    @if(Auth::user()->user_type==1)
+                      <a href="{{route('editPost',$value->id)}}" class="btn btn-info">Edit</a>
+                    @endif
+                    <a href="{{route('viewPost',$value->id)}}" class="btn-apply">@if(Auth::user()->user_type==1) View @else Apply Now @endif</a>                    
+                  </div>
+                </div>
+              </div>
+            @endforeach        
 
-            </div>
+            <!-- Start Pagination -->
+            {!! $jobs->links() !!}            
+            <!-- End Pagination -->
           </div>
         </div>
       </div>

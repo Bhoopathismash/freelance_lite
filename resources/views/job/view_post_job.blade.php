@@ -1,120 +1,111 @@
 @extends('layouts.base')
 
 @section('content')
-  <!-- Page Header Start -->
+ <!-- Page Header Start -->
     <div class="page-header">
       <div class="container">
         <div class="row">         
-          <div class="col-lg-12">
-            <div class="inner-header">
-              <h3>View A Job</h3>
+          <div class="col-lg-8 col-md-6 col-xs-12">
+            <div class="breadcrumb-wrapper">
+              <!-- <div class="img-wrapper">
+                <img src="assets/img/about/company-logo.png" alt="">
+              </div> -->
+              <div class="content" style="padding-left:0px;">
+                <h3 class="product-title text-capitalize">{{$job->job_title}}</h3>
+                <p class="brand">{{@$job->category->category_name}}</p>
+                <div class="tags">  
+                  <span class="text-capitalize"><i class="lni-map-marker"></i> {{@$job->location}}</span>  
+                  <span><i class="lni-calendar"></i> Posted {{date('D F, Y',strtotime($job->created_at))}}</span>  
+                </div>
+              </div>
             </div>
           </div>
+          <!-- <div class="col-lg-4 col-md-6 col-xs-12">
+            <div class="month-price">
+              <span class="year">Yearly</span>
+              <div class="price">$65,000</div>
+            </div>
+          </div> -->
         </div>
       </div>
     </div>
-    <!-- Page Header End -->  
+    <!-- Page Header End --> 
 
-    <!-- Content section Start --> 
-    <section class="section">
+    <!-- Job Detail Section Start -->  
+    <section class="job-detail section">
       <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-9 col-md-12 col-xs-12">
-            <div class="post-job box">
-              <h3 class="job-title">View Job</h3>
-              
-                <div class="form-group">
-                  <label class="control-label">Job Title</label>
-                  <input type="text" class="form-control" readonly="" value="{{$job->job_title}}" >
-                </div>         
+        <div class="row justify-content-between">
+          <div class="col-lg-8 col-md-12 col-xs-12">
+            <div class="content-area">  
+              <h4>Job Description</h4>
+              {{$job->tagline}}
+              <br>
+              <br>
+              {!!html_entity_decode($job->description)!!}
 
-                <div class="form-group">
-                  <label class="control-label">Category</label>
-                  <div class="search-category-container">
-                    <p>
-                      
-                          {{$job->category->category_name}}
-                    </p>
-                  </div>
-                </div> 
-                <div class="form-group">
-                  <label class="control-label">Job Tags <span>(optional)</span></label>
-                  <input type="text" class="form-control" readonly="" value="{{$job->job_tags}}" >
-                  <p class="note">Comma separate tags, such as required skills or technologies, for this job.</p>
-                </div>  
-                <div class="form-group">
-                  <label class="control-label">Description</label> 
-                  <div>{!!html_entity_decode($job->description)!!}</div>                                 
-                </div> 
-                <!-- <section id="editor">
-                  <div id="summernote"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem quia aut modi fugit, ratione saepe perferendis odio optio repellat dolorum voluptas excepturi possimus similique veritatis nobis. Provident cupiditate delectus, optio?</p></div>
-                </section> -->
-                <div class="form-group">
-                  <label class="control-label">Email</label>
-                  <input type="text" class="form-control" readonly="" value="{{$job->email}}">
-                </div>
-                <div class="form-group">
-                  <label class="control-label">Closing Date <span>(optional)</span></label>
-                  <input type="text" class="form-control" readonly="" value="{{date('d-m-Y',strtotime($job->closing_date))}}" >
-                </div> 
-                <div class="divider">
-                  <h3 class="job-title">Company Details</h3>
-                </div>
-                <div class="form-group">
-                  <label class="control-label">Company Name</label>
-                  <input type="text" class="form-control" readonly="" value="{{$job->company_name}}">
-                </div> 
-                <div class="form-group">
-                  <label class="control-label">Location <span>(optional)</span></label>
-                  <input type="text" class="form-control" readonly=""  value="{{$job->company_name}}">
-                </div> 
-                <div class="form-group">
-                  <label class="control-label">Website <span>(optional)</span></label>
-                  <input type="text" class="form-control" readonly="" value="{{$job->location}}">
-                </div> 
-                <div class="form-group">
-                  <label class="control-label">Tagline <span>(optional)</span></label>
-                  <textarea class="form-control" readonly="">{{$job->tagline}}</textarea>
-                </div>     
+              @if($user->user_type==2)
+                <div>
+                  <h5>How To Apply</h5>
+                  <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris.</p>
 
-                <div class="form-group">
-                  <label class="control-label">Job Details </label>
-                  @if($job->job_file)
-                      <img src="{{$job->job_file}}" class="img-responsive"  />
-                  @endif
-                </div>
+                  
+                  $check_bid=$job->bid()->where('user_id',$user->id)->first();
+                 
+                  @if($user)
+                  <form action="{{route('bidJob',$job->id)}}" method="POST">
+                    <div class="">
+                      <h4 class="small-title text-left">Place a Bid on this Project</h4>
+                      <p>You will be able to edit your bid until the project is awarded to someone.</p>
 
-                <div class="divider">
-                  <h3 class="job-title">Milestone</h3>
-                </div>
-                <div class="custom-file mb-3">  
-                  @foreach($job->milestone as $index => $value)
-                    <div class="mile-section">
-                      <div class="mile-block" id="mile_block_{{$index}}">
-                        <div class="form-group">
-                          <input type="text" readonly="" class="form-control"  id="milestone_{{$index}}" value="{{$value->milestone}}" />
+                      <div class="row">
+                        <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                          <label>Bid Amount</label>
+                          <input type="text" name="bid_amount" class="form-control" placeholder="Enter your bid">
                         </div>
-                        <div class="form-group">
-                          <textarea readonly="" class="form-control"  >{{$value->description}}</textarea>
+                        <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                          <label>This project will be delivered in</label>
+                          <input type="number" name="period" class="form-control" placeholder="In days">
                         </div>
-                        
+                        <div class="form-group col-lg-12 col-md-12 col-xs-12">
+                          <label>Describe your proposal</label>
+                          <textarea name="description" class="form-control" placeholder="What makes you the best candidate for this project?" rows="7"></textarea>
+                        </div>
                       </div>
+                      <button type="submit" class="btn btn-common">Place Bid</button> 
                     </div>
-                  @endforeach
-                  <br>
-                </div>
+                  </form>
+                  @endif
 
-                 <div class="form-group">
-                  <br>
-                  <br>
-                  <a href="{{route('bidJob',$job->id)}}" class="btn btn-common">Bid job</a>
                 </div>
+              @elseif(Auth::user()->user_type==1)
+                <div>
+                  
+                </div>
+              @endif
+
             </div>
           </div>
+
+          <div class="col-lg-4 col-md-12 col-xs-12">
+            <div class="sideber">
+              <div class="widghet">
+                <h3>About the Employer</h3>
+                <div class="">
+                    <p>{{$job->company_name}}</p>
+                    <p>{{$job->location}}</p>
+                    <p>{{$job->website}}</p>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        
         </div>
       </div>
     </section>
-    <!-- Content section End -->   
+    <!-- Job Detail Section End -->  
+
+    
 @endsection
 
 @section('scripts')
