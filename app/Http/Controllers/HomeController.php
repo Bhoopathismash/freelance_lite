@@ -47,10 +47,21 @@ class HomeController extends Controller
         return view('profile',compact('user'));
     }
 
-    public function jobs()
+    public function jobs(Request $request)
     {
         $user=Auth::user();
-        $jobs=PostJob::whereIn('status',[0,1])->get();
+        $jobs=PostJob::whereIn('status',[0,1]);
+
+        $keyword=$request->keyword;
+        $location=$request->location;
+        if($keyword){
+            $jobs=$jobs->where('job_title','LIKE', "%{$keyword}%")->orWhere('company_name','LIKE', "%{$keyword}%");
+        }
+        if($location){
+            $jobs=$jobs->where('location','LIKE', "%{$location}%");
+        }
+        $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(10);
+
         return view('job.job_list',compact('jobs'));
     }
 
@@ -205,8 +216,8 @@ class HomeController extends Controller
     public function bidJob(Request $request, $post_id)
     {
         $this->validate($request, [            
-            'bid_amount' => 'required',
-            'period' => 'required',            
+            'bid_amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'period' => 'required|numeric',            
             'description' => 'required',            
         ]);
 
@@ -216,13 +227,13 @@ class HomeController extends Controller
             $user_id=$user->id;
 
             $bid=new Bid;
-            $job->user_id=$user_id;
-            $job->post_job_id=$post_id;
-            $job->bid_amount=$request->bid_amount;
-            $job->period=$request->period;
-            $job->description=$request->description;
-            $job->status=0;
-            $job->save();
+            $bid->user_id=$user_id;
+            $bid->post_job_id=$post_id;
+            $bid->bid_amount=$request->bid_amount;
+            $bid->period=$request->period;
+            $bid->description=$request->description;
+            $bid->status=0;
+            $bid->save();
             
             return back()->with('flash_success','Your bid placed successfully');
 
@@ -232,13 +243,18 @@ class HomeController extends Controller
         }
     }
 
-    public function chat($post_id)
+    public function chat($post_id, $hirer_id, $worker_id)
     {
         $user=Auth::user();
-        $chat=Chat::where('post_job_id',$post_id)->get(); 
+        $hirer=User::findOrFail($hirer_id);
+        $worker=User::findOrFail($worker_id);
+        $chat=Chat::where('post_job_id',$post_id)->where(function($query) use($hirer_id, $worker_id){
+                    $query->where('hirer_user_id',$hirer_id)->orWhere('worker_user_id',$worker_id);
+                })->get();
+        
         $job=PostJob::where('id',$post_id)->with('milestone')->with('bid')->first(); 
 
-        return view('job.chat',compact('user','job','chat'));
+        return view('job.chat',compact('user','job','chat','hirer','worker'));
     }
     
     public function chatSend(Request $request)
@@ -251,9 +267,9 @@ class HomeController extends Controller
             $chat=new Chat; 
             $chat->post_job_id=$post_id;
             if($job->user_id==$user->id){
-                $chat->hirer_user_id=$post_id; 
+                $chat->hirer_user_id=$user->id; 
             }else{            
-                $chat->worker_user_id=$post_id; 
+                $chat->worker_user_id=$user->id; 
             }        
             $chat->content=trim($request->chat_content); 
             $chat->save();
@@ -271,24 +287,39 @@ class HomeController extends Controller
             $html=$align="";
             $user=Auth::user();
             $post_id=$request->post_id;
-            $chat=Chat::where('post_job_id',$post_id)->get(); 
-
+            $hirer_id=$request->hirer_id;
+            $worker_id=$request->worker_id;
+            
+            $chat=Chat::where('post_job_id',$post_id)->where(function($query) use($hirer_id, $worker_id){
+                    $query->where('hirer_user_id',$hirer_id)->orWhere('worker_user_id',$worker_id);
+                })->get();
+        
             foreach ($chat as $key => $value) {
 
-                if($value->hirer_user_id==$user->id){
-                    $align="float-right";  
-                }elseif($value->worker_user_id==$user->id){ 
-                    $align="float-right";
+                if($value->hirer_user_id==$user->id || $value->worker_user_id==$user->id){ 
+                    $align="float-right right-chat triangle right-top";
                 }else{ 
-                    $align="float-left";
+                    $align="float-left left-chat triangle left-top";
                 }
 
-                $html.='<div class="chat-block '.$align.'">'.$value->content.'</div>';
+                $html.='<div class="chat-block '.$align.'">'.$value->content.'<span class="chat-time">'.date('h:i A',strtotime($value->created_at)).'</span></div>';
             }
 
             return response()->json(['status'=>1,'refresh_content'=>$html],200);
         }catch(Exception $e){
             return response()->json(['status'=>0],500);
+        }
+    }
+
+    // Check User Online/Offline Staus
+    public function userLogStatus($id)
+    {
+        $user=User::findOrFail($id);
+        if($user->isOnline()){
+            return 1;
+        }else{
+
+            return 0;
         }
     }
 

@@ -45,41 +45,56 @@
 
               @if($user->user_type==2)
                 <div>
-                  <h5>How To Apply</h5>
-                  <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris.</p>
-
-                  
-                  $check_bid=$job->bid()->where('user_id',$user->id)->first();
+                  <?php $check_bid=$job->bid()->where('user_id',$user->id)->first(); 
+                        $chat_start=$job->chat()->where('worker_user_id',$user->id)->first(); ?>
                  
-                  @if($user)
-                  <form action="{{route('bidJob',$job->id)}}" method="POST">
-                    <div class="">
-                      <h4 class="small-title text-left">Place a Bid on this Project</h4>
-                      <p>You will be able to edit your bid until the project is awarded to someone.</p>
+                  @if(!$job->final_bid)
+                      <h5>How To Apply</h5>
+                      <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris.</p>
+                  
+                      <form action="{{route('bidJob',$job->id)}}" method="POST">
+                        @csrf
+                        <div class="">
+                          <h4 class="small-title text-left">Place a Bid on this Project</h4>
+                          <p>You will be able to edit your bid until the project is awarded to someone.</p>
 
-                      <div class="row">
-                        <div class="form-group col-lg-6 col-md-6 col-xs-12">
-                          <label>Bid Amount</label>
-                          <input type="text" name="bid_amount" class="form-control" placeholder="Enter your bid">
+                          <div class="row">
+                            <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                              <label>Bid Amount</label>
+                              <input type="text" name="bid_amount" class="form-control" placeholder="Enter your bid" required="" @if($check_bid) value="{{$check_bid->bid_amount}}" @endif >
+                            </div>
+                            <div class="form-group col-lg-6 col-md-6 col-xs-12">
+                              <label>This project will be delivered in</label>
+                              <input type="number" name="period" class="form-control" placeholder="In days" required="" @if($check_bid) value="{{$check_bid->period}}" @endif>
+                            </div>
+                            <div class="form-group col-lg-12 col-md-12 col-xs-12">
+                              <label>Describe your proposal</label>
+                              <textarea name="description" class="form-control" placeholder="What makes you the best candidate for this project?" rows="7" required="">@if($check_bid) {{$check_bid->description}} @endif</textarea>
+                            </div>
+                          </div>
+                          <button type="submit" class="btn btn-common">@if($check_bid) Update Bid @else Place Bid @endif</button> 
                         </div>
-                        <div class="form-group col-lg-6 col-md-6 col-xs-12">
-                          <label>This project will be delivered in</label>
-                          <input type="number" name="period" class="form-control" placeholder="In days">
-                        </div>
-                        <div class="form-group col-lg-12 col-md-12 col-xs-12">
-                          <label>Describe your proposal</label>
-                          <textarea name="description" class="form-control" placeholder="What makes you the best candidate for this project?" rows="7"></textarea>
-                        </div>
-                      </div>
-                      <button type="submit" class="btn btn-common">Place Bid</button> 
-                    </div>
-                  </form>
+                      </form>                    
+                  @endif
+
+                  @if($chat_start)
+                    <a href="{{route('chat',[$job->id,$job->user_id,$user->id])}}" class="btn btn-info float-right">Go to Chat</a>
                   @endif
 
                 </div>
               @elseif(Auth::user()->user_type==1)
-                <div>
-                  
+                <div class="">
+                  <h4 class="small-title text-left">Bids of this Project</h4>
+
+                  @foreach($job->bid as $value)
+                    <div class="job-listings">
+                      <label><b>User:</b></label> {{$value->user->name}}<br>
+                      <label><b>Bid Amount:</b></label> {{$value->bid_amount}}<br>
+                      <label><b>Delivery:</b></label> {{$value->period}} in days<br>
+                      <label><b>Description:</b></label> {{$value->description}}
+                      <a href="{{route('chat',[$job->id,$job->user_id,$value->user_id])}}" class="btn btn-info float-right">Chat</a>
+                    </div>
+                  @endforeach
                 </div>
               @endif
 

@@ -9,7 +9,7 @@
                 <span class="lni-menu"></span>
                 <span class="lni-menu"></span>
               </button>
-              <a href="/" class="navbar-brand"><img src="assets/img/logo.png" class="img-fluid" alt="setetres"></a>
+              <a href="/" class="navbar-brand"><img src="/assets/img/logo.png" class="img-fluid" alt="setetres"></a>
             </div>
 
             <div class="collapse navbar-collapse" id="main-navbar">

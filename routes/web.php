@@ -55,9 +55,10 @@ Route::get('/view_post/{id}', 'HomeController@viewPost')->name('viewPost');
 
 Route::post('/bid_job/{post_id}', 'HomeController@bidJob')->name('bidJob');
 
-Route::get('/chat/{post_id}', 'HomeController@chat')->name('chat');
+Route::get('/chat/{post_id}/{hirer_id}/{worker_id}', 'HomeController@chat')->name('chat');
 Route::post('/chat_send', 'HomeController@chatSend')->name('chatSend');
 
 Route::get('/refresh_chat', 'HomeController@refreshChat')->name('refreshChat');
+Route::get('/user_log_status/{id}', 'HomeController@userLogStatus')->name('userLogStatus');
 
 Route::get('/logout', 'HomeController@logout')->name('logout');
