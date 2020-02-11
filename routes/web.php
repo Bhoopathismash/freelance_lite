@@ -78,6 +78,8 @@ Route::get('pay', 'RazorpayController@pay')->name('pay');
 
 // route for make payment request using post method
 Route::post('packagePayment', 'RazorpayController@packagePayment')->name('packagePayment');
-Route::post('dopayment', 'RazorpayController@dopayment')->name('dopayment');
+
+// mileStonePayment
+Route::post('mileStonePayment', 'RazorpayController@mileStonePayment')->name('mileStonePayment');
 
 Route::get('/logout', 'HomeController@logout')->name('logout');

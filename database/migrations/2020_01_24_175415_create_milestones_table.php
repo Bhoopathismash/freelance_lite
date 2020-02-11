@@ -26,6 +26,8 @@ class CreateMilestonesTable extends Migration
             $table->text('hirer_comment')->nullable();
             $table->double('paid_amount',15,5)->nullable();
             $table->tinyInteger('payment_status')->default(0)->comment('0-Not,1-Paid');
+            $table->string('razorpay_payment_id')->nullable();
+            $table->string('razorpay_payment_status')->nullable();
             $table->timestamps();
         });
     }

@@ -59,14 +59,30 @@
                         @if($value->paid_amount)<label><b>Paid Amount:</b></label> {{$value->paid_amount}}<br>@endif
 
                         @if($user->id==$job->user_id)
-                          @if($value->release_status==0)
-                            <a href="{{route('releaseMilestone',$value->id)}}" class="btn btn-common float-right">Release Milestone</a>
-                          @else
-                            <form action="{{route('milestonePay')}}" method="Post">    
-                              @csrf                        
-                              <button type="submit" class="btn btn-common float-right">Pay</button>
-                            </form>
-                          @endif
+                          <div class="float-right">       
+                            @if($value->release_status==0)
+                              <a href="{{route('releaseMilestone',$value->id)}}" class="btn btn-common">Release Milestone</a>
+                            @else
+                              @if(!$value->razorpay_payment_id)                            
+                                  <form action="{{route('mileStonePayment')}}" method="POST" >
+                                      @csrf
+                                      <input type="hidden" name="milestone_id" value="{{$value->id}}">
+                                      <!-- Note that the amount is in paise   -->
+                                      <!--amount need to be in paisa-->
+                                      <script src="https://checkout.razorpay.com/v1/checkout.js"
+                                              data-key="{{ Config::get('custom.razor_key') }}"
+                                              data-amount="{{$value->amount}}00"
+                                              data-buttontext="Pay Milestone"
+                                              data-name="{{$value->milestone}}"
+                                              data-description="Milestone Value"
+                                              >
+                                      </script>
+                                  </form>
+                              @else
+                                 <button class="btn btn-success" type="button">Paid</button>
+                              @endif
+                            @endif
+                          </div>
                         @endif
                       </div>
                     @endif

@@ -56,6 +56,30 @@
       .online-status-recent { color: #dd8 !important; }
       .online-status-offline { color: #ccc !important; }
       .user-alert .alert{position: fixed; z-index: 999; bottom: 1%;width: 35%;left: 35%;}
+      .razorpay-payment-button{
+        background: #0088cd;
+          position: relative;
+          z-index: 1;
+
+          font-size: 14px;
+          padding: 10px 30px;
+          border-radius: 30px;
+          letter-spacing: 1px;
+          font-weight: 400;
+          color: #fff;
+          border: none;
+          text-transform: uppercase;
+          -webkit-transition: all 0.3s ease-in-out;
+          -moz-transition: all 0.3s ease-in-out;
+          -o-transition: all 0.3s ease-in-out;
+          transition: all 0.3s ease-in-out;
+          display: inline-block;
+          cursor: pointer;
+      }
+      .razorpay-payment-button:hover {
+          color: #fff;
+          box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.15), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+      }
     </style>
     
     <?php $pageurl = basename($_SERVER['PHP_SELF']);  ?>
