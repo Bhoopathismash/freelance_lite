@@ -19,6 +19,7 @@ class CreateChatsTable extends Migration
             $table->integer('hirer_user_id')->nullable();
             $table->integer('worker_user_id')->nullable();
             $table->mediumText('content');
+            $table->tinyInteger('status')->comment('0-not,1-seen');
             $table->timestamps();
         });
     }

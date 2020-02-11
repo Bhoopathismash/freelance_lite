@@ -43,7 +43,37 @@
               <br>
               {!!html_entity_decode($job->description)!!}
 
-              @if($user->user_type==2)
+              @if(($user->id==$job->user_id || $user->id==$job->assigned_to) && $job->status > 0)
+                <h5>Milestones</h5>
+                 @foreach($job->milestone as $value)
+                    @if($user->id==$job->user_id || ($job->user_id!=$user->id && $value->release_status==1))
+                      <div class="job-listings">
+                        <label><b>Milestone:</b></label> {{$value->milestone}}<br>
+                        <label><b>Description:</b></label> {{$value->description}}<br>
+                        <label><b>Amount:</b></label> {{$value->amount}}<br>
+                        @if($value->worker_status)<label><b>Worker Status:</b></label> {{$value->worker_status}}<br>@endif
+                        @if($value->worker_comment)<label><b>Worker Comment:</b></label> {{$value->worker_comment}}<br>@endif
+                        @if($value->hirer_status)<label><b>Hirer Status:</b></label> {{$value->hirer_status}}<br>@endif
+                        @if($value->hirer_comment)<label><b>Hirer Comment:</b></label> {{$value->hirer_comment}}<br>@endif
+                        @if($value->payment_status==1)<label><b>Payment Status:</b></label> Paid<br>@endif
+                        @if($value->paid_amount)<label><b>Paid Amount:</b></label> {{$value->paid_amount}}<br>@endif
+
+                        @if($user->id==$job->user_id)
+                          @if($value->release_status==0)
+                            <a href="{{route('releaseMilestone',$value->id)}}" class="btn btn-common float-right">Release Milestone</a>
+                          @else
+                            <form action="{{route('milestonePay')}}" method="Post">    
+                              @csrf                        
+                              <button type="submit" class="btn btn-common float-right">Pay</button>
+                            </form>
+                          @endif
+                        @endif
+                      </div>
+                    @endif
+                  @endforeach
+              @endif
+                  
+              @if($user->user_type==2 && $job->status==0)
                 <div>
                   <?php $check_bid=$job->bid()->where('user_id',$user->id)->first(); 
                         $chat_start=$job->chat()->where('worker_user_id',$user->id)->first(); ?>
@@ -51,7 +81,8 @@
                   @if(!$job->final_bid)
                       <h5>How To Apply</h5>
                       <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris.</p>
-                  
+
+                    @if($user_bid_packages->balance_bids>0)
                       <form action="{{route('bidJob',$job->id)}}" method="POST">
                         @csrf
                         <div class="">
@@ -75,10 +106,14 @@
                           <button type="submit" class="btn btn-common">@if($check_bid) Update Bid @else Place Bid @endif</button> 
                         </div>
                       </form>                    
+                    @else
+                      <p>You have exceed your bid limit, to update your bid membership plan. Click on below button.</p>
+                      <a href="{{route('updateBidPackage')}}">Update Bid Plan</a>
+                    @endif
                   @endif
 
                   @if($chat_start)
-                    <a href="{{route('chat',[$job->id,$job->user_id,$user->id])}}" class="btn btn-info float-right">Go to Chat</a>
+                    <a href="{{route('chat',[$job->id,$job->user_id,$user->id])}}" class="btn btn-common float-right">Go to Chat</a>
                   @endif
 
                 </div>
@@ -92,7 +127,12 @@
                       <label><b>Bid Amount:</b></label> {{$value->bid_amount}}<br>
                       <label><b>Delivery:</b></label> {{$value->period}} in days<br>
                       <label><b>Description:</b></label> {{$value->description}}
-                      <a href="{{route('chat',[$job->id,$job->user_id,$value->user_id])}}" class="btn btn-info float-right">Chat</a>
+                      @if($job->status==0)
+                        <a href="{{route('chat',[$job->id,$job->user_id,$value->user_id])}}" class="btn btn-common float-right">Chat</a>
+                      @endif
+                      @if($job->assigned_to==$value->user_id)
+                        <p class="float-right">Worker</p>
+                      @endif
                     </div>
                   @endforeach
                 </div>
@@ -109,8 +149,25 @@
                     <p>{{$job->company_name}}</p>
                     <p>{{$job->location}}</p>
                     <p>{{$job->website}}</p>
+                    @if($job->assigned_to==$user->id)
+                      <br>
+                      <a href="{{route('chat',[$job->id,$job->user_id,$job->assigned_to])}}" class="btn btn-common">Chat</a>
+                    @endif
                 </div>
               </div>
+
+              @if($user->id==$job->user_id && $job->status > 0)
+              <div class="widghet">
+                <h3>Worker Details</h3>
+                <div class="">
+                    <p>Name:{{@$value->assignedTo->name}}</p> 
+                    <p>Email: {{@$value->assignedTo->email}} </p>
+                    <p>Final Bid: {{$job->final_bid}}</p>
+                    <br>
+                    <a href="{{route('chat',[$job->id,$job->user_id,$job->assigned_to])}}" class="btn btn-common">Chat</a>
+                </div>
+              </div>
+              @endif
               
             </div>
           </div>

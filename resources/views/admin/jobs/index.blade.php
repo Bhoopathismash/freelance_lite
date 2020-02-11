@@ -16,6 +16,8 @@
                             <th>Company Name</th>                            
                             <th>Location</th>                            
                             <th>Category</th>
+                            <th>Status</th>
+                            <th>Assigned To</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -25,6 +27,8 @@
                             <th>Company Name</th>                            
                             <th>Location</th>                            
                             <th>Category</th>
+                            <th>Status</th>
+                            <th>Assigned To</th>
                     </tfoot>
                     <tbody>
                         @foreach($jobs as $index => $value)
@@ -34,6 +38,8 @@
                             <td>{{$value->company_name}}</td>
                             <td>{{$value->location}}</td>
                             <td>{{$value->category->category_name}}</td>                                                  
+                            <td>@if($value->status==0) Not Started  @elseif($value->status==1) Biding Finished  @elseif($value->status==2) Started @elseif($value->status==0) Finished @endif</td>
+                            <td>{{@$value->assignedTo->name}} - {{@$value->assignedTo->email}}</td>                                                  
                         </tr>  
                         @endforeach                      
                     </tbody>

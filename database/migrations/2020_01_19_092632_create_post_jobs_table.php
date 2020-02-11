@@ -31,8 +31,9 @@ class CreatePostJobsTable extends Migration
             $table->integer('expected_working_hours')->default(0);
             $table->integer('taken_working_days')->default(0);
             $table->integer('taken_working_hours')->default(0);*/
+            $table->integer('assigned_to')->nullable();
             $table->double('final_bid',15,5)->default(0);
-            $table->tinyInteger('status')->default(0)->comment('0-Not started,1-biding,2-started,3-finished');
+            $table->tinyInteger('status')->default(0)->comment('0-Not started,1-finished biding,2-started,3-finished');
             $table->timestamps();
         });
     }

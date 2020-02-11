@@ -39,7 +39,12 @@ Route::group(['prefix' => 'admin'], function () {
 Auth::routes();
 
 Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+Route::get('/package', 'HomeController@package')->name('package');
+//Route::get('/user_package/{id}', 'HomeController@userPackage')->name('userPackage');
+
 Route::get('/profile', 'HomeController@profile')->name('profile');
+Route::get('/profile_update', 'HomeController@profileUpdate')->name('profileUpdate');
+Route::post('/change/password', 'HomeController@update_password');
 
 //Job Hire
 Route::get('/joblist', 'HomeController@jobList')->name('jobList');
@@ -60,5 +65,19 @@ Route::post('/chat_send', 'HomeController@chatSend')->name('chatSend');
 
 Route::get('/refresh_chat', 'HomeController@refreshChat')->name('refreshChat');
 Route::get('/user_log_status/{id}', 'HomeController@userLogStatus')->name('userLogStatus');
+
+Route::post('/assign_job', 'HomeController@assignJob')->name('assignJob');
+Route::get('/release_milestone/{id}', 'HomeController@releaseMilestone')->name('releaseMilestone');
+Route::post('/milestone_pay', 'HomeController@milestonePay')->name('milestonePay');
+
+Route::get('/update_bid_package', 'HomeController@updateBidPackage')->name('updateBidPackage');
+
+// route for to show payment form using get method
+Route::get('pay_package/{id}', 'RazorpayController@payPackage')->name('payPackage');
+Route::get('pay', 'RazorpayController@pay')->name('pay');
+
+// route for make payment request using post method
+Route::post('packagePayment', 'RazorpayController@packagePayment')->name('packagePayment');
+Route::post('dopayment', 'RazorpayController@dopayment')->name('dopayment');
 
 Route::get('/logout', 'HomeController@logout')->name('logout');

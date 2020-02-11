@@ -10,6 +10,8 @@ use App\JobCategory;
 use App\PostJob;
 use App\Milestones;
 use App\Bid;
+use App\BidPackages;
+use App\UserBidPackages;
 use App\Chat;
 
 class HomeController extends Controller
@@ -41,10 +43,82 @@ class HomeController extends Controller
         }
     }
 
+    public function package()
+    {
+        $user=Auth::user();
+        $bid_packages=BidPackages::orderBy('sort','asc')->get();
+        //dd($bid_packages);
+        return view('packages',compact('user','bid_packages'));
+    }
+
+    public function userPackage($id)
+    {
+        $user=Auth::user();
+        $bid_packages=BidPackages::get();
+        //dd($bid_packages);
+        return view('packages',compact('user','bid_packages'));
+    }
+
     public function profile()
     {
         $user=Auth::user();
-        return view('profile',compact('user'));
+        $user_bid_packages=UserBidPackages::where('user_id',$user->id)->where('status',1)->with('bidPackage')->first();
+        //dd($user_bid_packages);
+        return view('profile',compact('user','user_bid_packages'));
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|string',
+        ]);
+
+        try{
+
+            $user=Auth::user();        
+            $user->name=$request->name;
+            $user->save();
+
+            return back()->with('flash_success','Profile updated successfully');
+
+        }catch(Exception $e){
+
+            return back()->with('flash_error','Something went wrong');
+        }
+    }
+
+    //Change Password
+
+    public function update_password(Request $request)
+    {
+        $this->validate($request, [
+            'password' => 'required|confirmed|min:6',
+            'current_password' => 'required',
+        ]);
+
+        $User = Auth::user();
+
+        if(Hash::check($request->current_password, $User->password))
+        {
+            if($request->current_password!=$request->password){
+                $User->password = bcrypt($request->password);
+                $User->save();
+
+                $user_email=$User->email; 
+                //Mail::to($user_email)->send(new Changepasswordalert($user_email));
+
+                //return back()->with('flash_success', trans('user.profiles.pass_updated'));
+                //Auth::logout();
+                \Session::flash('flash_success',trans('user.profiles.pass_updated'));
+                return redirect('/security');
+
+            } else {
+                return back()->with('flash_error', trans('user.profiles.same'));
+            }
+
+        } else {
+            return back()->with('flash_error', trans('user.profiles.current_wrong_pwd'));
+        }
     }
 
     public function jobs(Request $request)
@@ -203,14 +277,16 @@ class HomeController extends Controller
         $user=Auth::user();
         
         $job=PostJob::where('id',$id)->with('milestone')->with('bid')->first();
+        //dd($job);
 
         if(($user->user_type==1) && ($job->user_id != $user->id)){
            return back()->with('flash_error','You are not allowed to perform this operation');
         }
-
-        //dd($job);
         $category=JobCategory::get();
-        return view('job.view_post_job',compact('user','job','category'));
+
+        $user_bid_packages=UserBidPackages::where('user_id',$user->id)->where('status',1)->first();
+
+        return view('job.view_post_job',compact('user','job','category','user_bid_packages'));
     }
 
     public function bidJob(Request $request, $post_id)
@@ -236,6 +312,88 @@ class HomeController extends Controller
             $bid->save();
             
             return back()->with('flash_success','Your bid placed successfully');
+
+        }catch(Exception $e){
+
+            return back()->with('flash_error','Something went wrong');
+        }
+    } 
+
+    public function assignJob(Request $request)
+    {
+        $this->validate($request, [            
+            'post_id' => 'required|numeric',            
+            'worker_id' => 'required|numeric',            
+        ]);
+
+        try{
+
+            $user=Auth::user();
+            $user_id=$user->id;
+
+            $job=PostJob::findOrFail($request->post_id);
+            if($user->id==$job->user_id){
+                $job->assigned_to=$request->worker_id;
+                $job->status=1;
+                $job->save();
+                
+                return back()->with('flash_success','Job assigned successfully');
+            }else{
+                return back()->with('flash_error','Your are not allowed to do this operation');
+            }
+
+        }catch(Exception $e){
+
+            return back()->with('flash_error','Something went wrong');
+        }
+    }
+
+    public function releaseMilestone($id)
+    {
+        try{
+
+            $user=Auth::user();
+            $user_id=$user->id;
+
+            $milestone=Milestones::findOrFail($id);
+            $job=PostJob::findOrFail($milestone->post_job_id);
+            if($user->id==$job->user_id){
+                $milestone->release_status=1;
+                $milestone->save();
+                
+                return back()->with('flash_success','Milestone successfully');
+            }else{
+                return back()->with('flash_error','Your are not allowed to do this operation');
+            }
+
+        }catch(Exception $e){
+
+            return back()->with('flash_error','Something went wrong');
+        }
+    }
+
+    public function milestonePay(Request $request)
+    {
+        $this->validate($request, [            
+            'post_id' => 'required|numeric',            
+            'worker_id' => 'required|numeric',            
+        ]);
+
+        try{
+
+            $user=Auth::user();
+            $user_id=$user->id;
+
+            $job=PostJob::findOrFail($request->post_id);
+            if($user->id==$job->user_id){
+                $job->assigned_to=$request->worker_id;
+                $job->status=1;
+                $job->save();
+                
+                return back()->with('flash_success','Job assigned successfully');
+            }else{
+                return back()->with('flash_error','Your are not allowed to do this operation');
+            }
 
         }catch(Exception $e){
 
@@ -297,9 +455,9 @@ class HomeController extends Controller
             foreach ($chat as $key => $value) {
 
                 if($value->hirer_user_id==$user->id || $value->worker_user_id==$user->id){ 
-                    $align="float-right right-chat triangle right-top";
+                    $align="float-right right-chat";
                 }else{ 
-                    $align="float-left left-chat triangle left-top";
+                    $align="float-left left-chat";
                 }
 
                 $html.='<div class="chat-block '.$align.'">'.$value->content.'<span class="chat-time">'.date('h:i A',strtotime($value->created_at)).'</span></div>';
@@ -321,6 +479,19 @@ class HomeController extends Controller
 
             return 0;
         }
+    }
+
+    public function updateBidPackage()
+    {
+        try{
+            $user=Auth::user();
+            
+
+            return response()->json(['status'=>1],200);
+        }catch(Exception $e){
+            return response()->json(['status'=>0],500);
+        }
+
     }
 
     public function logout()

@@ -12,6 +12,10 @@ class PostJob extends Model
     	return $this->belongsTo('App\User','user_id','id');
     }
 
+    public function assignedTo(){
+    	return $this->belongsTo('App\User','assigned_to','id');
+    }
+
     public function category(){
     	return $this->hasOne('App\JobCategory','id','category_id');
     }

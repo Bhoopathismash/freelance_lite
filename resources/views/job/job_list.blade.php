@@ -64,7 +64,7 @@
                   
                   <div class="col-lg-4 col-md-4 col-xs-12 text-right">
                     @if(Auth::user()->user_type==1)
-                      <a href="{{route('editPost',$value->id)}}" class="btn btn-info">Edit</a>
+                      <a href="{{route('editPost',$value->id)}}" class="btn-apply">Edit</a>
                     @endif
                     <a href="{{route('viewPost',$value->id)}}" class="btn-apply">@if(Auth::user()->user_type==1) View @else Apply Now @endif</a>                    
                   </div>
