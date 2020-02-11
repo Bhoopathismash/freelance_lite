@@ -38,24 +38,27 @@
                   </form>
                 </div>
 
-                <div class="col-lg-6">
-                  <h3 class="job-title">Bids</h3>
-                  @if($user_bid_packages->bidPackage)
-                  <div>
-                    <label>Membership Plan</label>
-                    <p>{{$user_bid_packages->bidPackage->name}}</p>
-                    <p>{{$user_bid_packages->bidPackage->period}}</p>
-                    <p>{{$user_bid_packages->bidPackage->no_of_bids}}</p>
-                  </div>
-                  @endif
+                @if($user_bid_packages && $user->user_type==2)
+                  <div class="col-lg-6">
+                    <h3 class="job-title">Bids</h3>
+                    
+                      @if(isset($user_bid_packages->bidPackage))
+                      <div>
+                        <label>Membership Plan</label>
+                        <p>{{$user_bid_packages->bidPackage->name}}</p>
+                        <p>{{$user_bid_packages->bidPackage->period}}</p>
+                        <p>{{$user_bid_packages->bidPackage->no_of_bids}}</p>
+                      </div>
+                      @endif
 
-                  <div>  
-                    <label>Bid Details</label>
-                    <p><b>Number of bids placed: </b>{{$user_bid_packages->no_of_bids}}</p>
-                    <p><b>Balance bids: </b>{{$user_bid_packages->balance_bids}}</p>
-                    <p><b>Plan purchased on: </b>{{date('d-m-Y',strtotime($user_bid_packages->created_at))}}</p>
+                      <div>  
+                        <label>Bid Details</label>
+                        <p><b>Number of bids placed: </b>{{$user_bid_packages->used_bids}}</p>
+                        <p><b>Balance bids: </b>{{$user_bid_packages->balance_bids}}</p>
+                        <p><b>Plan purchased on: </b>{{date('d-m-Y',strtotime($user_bid_packages->created_at))}}</p>
+                      </div>
                   </div>
-                </div>
+                @endif
               </div>
               <br>
               <div class="row">

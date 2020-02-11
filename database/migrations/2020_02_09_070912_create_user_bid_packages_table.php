@@ -18,10 +18,12 @@ class CreateUserBidPackagesTable extends Migration
             $table->integer('user_id');
             $table->integer('package_id');
             $table->integer('total_bids');
-            $table->integer('no_of_bids');
+            $table->integer('used_bids');
             $table->integer('balance_bids');
             $table->string('payment_id');
             $table->tinyInteger('status')->comment('0-Inactive, 1-Active');
+            $table->string('razorpay_payment_id')->nullable();
+            $table->string('razorpay_payment_status')->nullable();
             $table->timestamps();
         });
     }

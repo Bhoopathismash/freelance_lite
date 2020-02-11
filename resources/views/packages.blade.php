@@ -44,7 +44,25 @@
                       <p class="MembershipPlan-duration MembershipPlan-duration--no-discount">{{$value->no_of_bids}} Bids Per Month</p>
                       <!-- NEW -->
                       <div class="MembershipPlan-cta">
-                        <a href="{{route('payPackage',$value->id)}}" class="btn btn-small btn-info">Get Started!</a>
+                        @if($value->amount > 0)
+                          <form action="{{route('packagePayment')}}" method="POST" >
+                              @csrf
+                              <input type="hidden" name="package_id" value="{{$value->id}}">
+                              <!-- Note that the amount is in paise   -->
+                              <!--amount need to be in paisa-->
+                              <script src="https://checkout.razorpay.com/v1/checkout.js"
+                                      data-key="{{ Config::get('custom.razor_key') }}"
+                                      data-amount="{{$value->amount}}00"
+                                      data-buttontext="Get Started!"
+                                      data-name="{{$value->milestone}}"
+                                      data-description="Milestone Value"
+                                      >
+                              </script>
+                          </form>
+                        @else
+                          <a href="{{route('profile')}}" class="btn btn-common">Get Started!</a>
+                        @endif
+                          
                       </div>
                     </div>
                   </div>               
