@@ -15,9 +15,11 @@
             <div class="collapse navbar-collapse" id="main-navbar">
               <ul class="navbar-nav mr-auto w-100 justify-content-end">
 
-                  <li class="nav-item {{ Request::is('home') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{route('home')}}">Home</a>
-                  </li>
+               
+                <li class="nav-item {{ Request::is('home') ? 'active' : '' }}">
+                  <a class="nav-link" href="{{route('home')}}">Home</a>
+                </li>
+                
 
                 @if(Auth::check())
 
@@ -33,13 +35,20 @@
                     </li>
                   @endif  
 
-                  @if($nav_user->user_type==1)              
+                  @if($nav_user->user_type==1) 
+                    <!-- Hirer own jobs -->             
                     <li class="nav-item {{ Request::is('joblist') ? 'active' : '' }}">
                       <a href="{{route('jobList')}}" class="nav-link">Jobs</a>
                     </li>
                   @else
+                    <!-- All jobs -->   
                     <li class="nav-item {{ Request::is('jobs') ? 'active' : '' }}">
                       <a href="{{route('jobs')}}" class="nav-link">Jobs</a>
+                    </li>
+
+                    <!-- Worker taken jobs -->   
+                    <li class="nav-item {{ Request::is('my_jobs') ? 'active' : '' }}">
+                      <a href="{{route('myJobs')}}" class="nav-link">My Jobs</a>
                     </li>
                   @endif
                   
@@ -49,9 +58,9 @@
                 
                 @endif
 
-                <li class="nav-item {{ Request::is('faq') ? 'active' : '' }}">
+                <!-- <li class="nav-item {{ Request::is('faq') ? 'active' : '' }}">
                   <a class="nav-link" href="{{route('faq')}}">How it works</a>
-                </li>
+                </li> -->
 
                 @if(Auth::check())
                   <li class="nav-item">

@@ -24,7 +24,7 @@
                 <ul class="menu">
                   <li><a href="terms-and-condition">Terms & Conditions</a></li>
                   <li><a href="privacy">Privacy</a></li>
-                  <li><a href="referral">Refferal Terms</a></li>
+                  <li><a href="{{route('faq')}}">How it works</a></li>
                   <li><a href="license">Product License</a></li>
                 </ul>
               </div>

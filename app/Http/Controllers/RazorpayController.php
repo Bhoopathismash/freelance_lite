@@ -21,25 +21,28 @@ class RazorpayController extends Controller
     public function packagePayment()
     {
         try{
-
             $user=Auth::user();
             $input = Input::all();
             $razorpay_payment_id=$input['razorpay_payment_id'];
             $package_id=$input['package_id'];
-
+            
             if(count($input)  && !empty($razorpay_payment_id)) {
                 try {
+                    $package=BidPackages::findOrFail($package_id); 
                     //get API Configuration 
                     $api = new Api(config('custom.razor_key'), config('custom.razor_secret'));
                     //Fetch payment information by razorpay_payment_id
                     $payment = $api->payment->fetch($razorpay_payment_id);
+                    $amount_check=$payment->amount/100;
+
+                    if(($package->amount==0) || ($amount_check!=$package->amount)){
+                        return back()->with('flash_error','Wrong membership plan');
+                    }
                     //$response = $api->payment->fetch($razorpay_payment_id)->capture(array('amount'=>$payment['amount'])); 
                 } catch (\Exception $e) {
                     //return  $e->getMessage();                
                     return back()->with('flash_error',$e->getMessage());
-                }
-
-                $package=BidPackages::findOrFail($package_id); 
+                }               
 
                 $previousUserPackage=UserBidPackages::where('user_id',$user->id)->where('status',1)->get();
                 foreach ($previousUserPackage as $key => $value) {

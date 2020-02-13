@@ -54,8 +54,9 @@ class HomeController extends Controller
     {
         $user=Auth::user();
         $bid_packages=BidPackages::orderBy('sort','asc')->get();
-        //dd($bid_packages);
-        return view('packages',compact('user','bid_packages'));
+        $user_bid_packages=UserBidPackages::where('user_id',$user->id)->where('status',1)->where('balance_bids','>',0)->first();
+        //dd($user_bid_packages);
+        return view('packages',compact('user','bid_packages','user_bid_packages'));
     }
 
     public function userPackage($id)
@@ -165,6 +166,24 @@ class HomeController extends Controller
         return view('job.job_list',compact('jobs'));
     }
 
+    public function myJobs(Request $request){
+        $user=Auth::user();
+
+        $jobs=PostJob::where('assigned_to',$user->id);
+
+        $keyword=$request->keyword;
+        $location=$request->location;
+        if($keyword){
+            $jobs=$jobs->where('job_title','LIKE', "%{$keyword}%")->orWhere('company_name','LIKE', "%{$keyword}%");
+        }
+        if($location){
+            $jobs=$jobs->where('location','LIKE', "%{$location}%");
+        }
+        $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(10);
+        
+        return view('job.job_list',compact('jobs'));
+    }
+
     public function postJob()
     {
         $category=JobCategory::where('status',1)->get();
@@ -219,8 +238,6 @@ class HomeController extends Controller
             return back()->with('flash_error','Something went wrong');
         }
     }
-
-
 
     public function editPost($id)
     {
@@ -295,7 +312,7 @@ class HomeController extends Controller
 
         return view('job.view_post_job',compact('user','job','category','user_bid_packages'));
     }
-
+    
     public function bidJob(Request $request, $post_id)
     {
         $this->validate($request, [            

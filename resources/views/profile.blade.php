@@ -40,24 +40,27 @@
 
                 @if($user_bid_packages && $user->user_type==2)
                   <div class="col-lg-6">
-                    <h3 class="job-title">Bids</h3>
-                    
-                      @if(isset($user_bid_packages->bidPackage))
-                      <div>
-                        <label>Membership Plan</label>
-                        <p>{{$user_bid_packages->bidPackage->name}}</p>
-                        <p>{{$user_bid_packages->bidPackage->period}}</p>
-                        <p>{{$user_bid_packages->bidPackage->no_of_bids}}</p>
-                      </div>
-                      @endif
+                    <h3 class="job-title">Bids</h3>                    
+                    <div class="float-left">  
+                      <h6>Bid Details</h6>
+                      <p><b>Number of bids placed: </b>{{$user_bid_packages->used_bids}}</p>
+                      <p><b>Balance bids: </b>{{$user_bid_packages->balance_bids}}</p>
+                      <p><b>Plan purchased on: </b>{{date('d-m-Y',strtotime($user_bid_packages->created_at))}}</p>
+                    </div>
 
-                      <div>  
-                        <label>Bid Details</label>
-                        <p><b>Number of bids placed: </b>{{$user_bid_packages->used_bids}}</p>
-                        <p><b>Balance bids: </b>{{$user_bid_packages->balance_bids}}</p>
-                        <p><b>Plan purchased on: </b>{{date('d-m-Y',strtotime($user_bid_packages->created_at))}}</p>
-                      </div>
+                    @if(isset($user_bid_packages->bidPackage))
+                    <div class="float-right">
+                      <h6>Membership Plan</h6>
+                      <p><b>Plan Name: </b> {{$user_bid_packages->bidPackage->name}}</p>
+                      <p><b>Period: </b> {{$user_bid_packages->bidPackage->period}} month</p>
+                      <p><b>Number of bids bought: </b> {{$user_bid_packages->bidPackage->no_of_bids}}</p>
+                    </div>
+                    @endif
+
+                    <br>
+                    <a href="{{route('package')}}" class="btn btn-common">Go to membership page</a>
                   </div>
+
                 @endif
               </div>
               <br>

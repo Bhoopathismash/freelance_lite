@@ -56,6 +56,7 @@ Route::get('/edit_post/{id}', 'HomeController@editPost')->name('editPost');
 Route::post('/post_job_update/{id}', 'HomeController@postJobUpdate')->name('postJobUpdate');
 
 
+Route::get('/my_jobs', 'HomeController@myJobs')->name('myJobs');
 Route::get('/jobs', 'HomeController@jobs')->name('jobs');
 Route::get('/view_post/{id}', 'HomeController@viewPost')->name('viewPost');
 
