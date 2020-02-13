@@ -21,6 +21,8 @@ Route::get('/about', 'StaticController@about')->name('about');
 Route::get('/faq', 'StaticController@faq')->name('faq');
 Route::get('/contact', 'StaticController@contact')->name('contact');
 
+Route::get('/verifyemail/{token}', 'Auth\RegisterController@verify');
+
 Route::group(['prefix' => 'admin'], function () {
   Route::get('/login', 'AdminAuth\LoginController@showLoginForm')->name('admin.login');
   Route::post('/login', 'AdminAuth\LoginController@login');

@@ -34,11 +34,18 @@ class HomeController extends Controller
     public function index()
     {
         $user=Auth::user();
+        $user_id=$user->id;
 
         if($user->user_type==1){ //Hire
-
            return view('hire_dashboard');
         }else{ //Work
+
+            $user_bid_packages=UserBidPackages::where('user_id',$user_id)->where('status',1)->where('balance_bids','>',0)->first();
+            
+            if(!$user_bid_packages){
+                return redirect('/package')->with('flash_error','Your biding limit are over, Kindly update your package for further biding...');
+            }
+
             return view('work_dashboard');
         }
     }
@@ -298,9 +305,14 @@ class HomeController extends Controller
         ]);
 
         try{
-
             $user=Auth::user();
             $user_id=$user->id;
+
+            $user_bid_packages=UserBidPackages::where('user_id',$user_id)->where('status',1)->where('balance_bids','>',0)->first();
+
+            if(!$user_bid_packages){
+                return redirect('/package')->with('flash_error','Your biding limit are over, Kindly update your package for further biding...');
+            }
 
             $bid=new Bid;
             $bid->user_id=$user_id;

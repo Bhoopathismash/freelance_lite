@@ -10,6 +10,9 @@
     <!-- Header Section Start -->
     <header id="home" class="hero-area">
 		@include('include.nav')
+    <div class="user-alert">
+      @include('common.notify')      
+    </div>
    	@yield('home_content')
                
     </header>

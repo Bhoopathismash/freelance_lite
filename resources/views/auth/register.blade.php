@@ -71,15 +71,18 @@
                       </div>
                     </div>     
 
-                    <div class="form-group">
-                      <div class="input-icon">
-                        <label>Want to work</label>
-                        <input id="user_type1" type="radio" class="form-control" name="user_type" required value="2">
-
-                         <label>Want to hire</label>
-                        <input id="user_type2" type="radio" class="form-control" name="user_type" required value="1">
+                    <div class="text-center">                      
+                      <div class="form-check-inline">
+                          <label class="form-check-label" for="radio1">
+                            <input id="user_type1" type="radio" class="form-check-input" name="user_type" required value="2">I'm Jobseeker
+                          </label>
                       </div>
-                    </div>  
+                      <div class="form-check-inline">
+                        <label class="form-check-label" for="radio1">
+                          <input id="user_type2" type="radio" class="form-check-input" name="user_type" required value="1">I'm Recruiter
+                        </label>
+                      </div>  
+                    </div>
 
                     <button class="btn btn-common log-btn mt-3" type="submit" >Register</button>
                     <p class="text-center">Already have an account?<a href="login"> Sign In</a></p>

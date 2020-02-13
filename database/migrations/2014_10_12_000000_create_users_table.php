@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->string('github_url')->nullable();
             $table->tinyInteger('email_verified')->default(0)->comment('0-Not,1-Verified');
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('email_token',255)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

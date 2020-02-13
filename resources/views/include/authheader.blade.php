@@ -18,4 +18,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/override.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/summernote.css')}}">
     
-    <?php $pageurl = basename($_SERVER['PHP_SELF']);  ?>
+    <style type="text/css">
+        .user-alert .alert{position: fixed; z-index: 999; bottom: 1%;width: 35%;left: 35%;}
+    </style>

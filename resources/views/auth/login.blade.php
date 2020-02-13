@@ -48,23 +48,23 @@
                         @endif
                       </div>
                     </div> 
-                    <div class="form-group form-check">
+                    <div class="form-group form-check text-center">
                       <input type="checkbox" class="form-check-input" id="keepme">
                       <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                       <label class="form-check-label" for="exampleCheck1">Keep Me Signed In</label>
                     </div>
                     <button class="btn btn-common log-btn" type="submit" >Submit</button>
                 </form>
-              <ul class="form-links">
-                <li class="text-center"><a href="register">Don't have an account?</a></li>
-                <li>
-                    @if (Route::has('password.request'))
-                        <a class="btn btn-link" href="{{ route('password.request') }}">
-                            {{ __('Forgot Your Password?') }}
-                        </a>
-                    @endif
-                </li>
-              </ul>
+                <div>
+                  <p class="float-left">
+                      @if (Route::has('password.request'))
+                          <a href="{{ route('password.request') }}">
+                              {{ __('Forgot Your Password?') }}
+                          </a>
+                      @endif
+                  </p>
+                  <p class="float-right">Don't have an account?<a href="register"> Sign Up</a></p>
+                </div>
             </div>
           </div>
         </div>
