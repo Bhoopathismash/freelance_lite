@@ -33,10 +33,10 @@
                 <p class="text-capitalize float-left">
                   <?php $opponent_id=0; ?>
                   @if($job->user_id==$user->id) 
-                    {{$worker->name}} 
+                    <img  @if($worker->profile_image) src="{{$worker->profile_image}}" @else src="/assets/img/user-icon.png" @endif   class="img-thumbnail" width='50' />   {{$worker->name}} 
                     <?php $opponent_id=$worker->id; ?>
                   @else 
-                    {{$hirer->name}} 
+                    <img  @if($hirer->profile_image) src="{{$hirer->profile_image}}" @else src="/assets/img/user-icon.png" @endif   class="img-thumbnail" width='50' />  {{$hirer->name}} 
                     <?php $opponent_id=$hirer->id; ?>
                   @endif
                 </p>

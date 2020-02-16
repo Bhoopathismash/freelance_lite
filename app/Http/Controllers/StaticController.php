@@ -5,7 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use App\User;
+use App\JobCategory;
+use App\PostJob;
+use App\Milestones;
+use App\Bid;
+use App\BidPackages;
 use App\UserBidPackages;
+use App\Chat;
 
 class StaticController extends Controller
 {
@@ -32,6 +38,43 @@ class StaticController extends Controller
             }
         }
         return view('welcome');
+    }
+
+    public function jobs(Request $request)
+    {
+        $user=Auth::user();
+        $jobs=PostJob::whereIn('status',[0,1]);
+
+        $keyword=$request->keyword;
+        $location=$request->location;
+        if($keyword){
+            $jobs=$jobs->where('job_title','LIKE', "%{$keyword}%")->orWhere('company_name','LIKE', "%{$keyword}%");
+        }
+        if($location){
+            $jobs=$jobs->where('location','LIKE', "%{$location}%");
+        }
+        $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(10);
+
+        return view('job.job_list',compact('jobs'));
+    }
+
+    public function viewPost($id)
+    {
+        $user=Auth::user();
+        
+        $job=PostJob::where('id',$id)->with('milestone')->with('bid')->first();
+        //dd($job);
+
+        
+        $category=JobCategory::get();
+
+        $user_bid_packages=UserBidPackages::where('status',1);
+        if($user){
+            $user_bid_packages=$user_bid_packages->where('user_id',$user->id);
+        }
+        $user_bid_packages=$user_bid_packages->first();
+
+        return view('job.view_post_job',compact('user','job','category','user_bid_packages'));
     }
 
     public function about()

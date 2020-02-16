@@ -58,40 +58,20 @@
                   <label class="control-label">Description</label> 
                   <textarea id="summernote" name="job_description" required></textarea>                                 
                 </div> 
-                <!-- <section id="editor">
-                  <div id="summernote"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem quia aut modi fugit, ratione saepe perferendis odio optio repellat dolorum voluptas excepturi possimus similique veritatis nobis. Provident cupiditate delectus, optio?</p></div>
-                </section> -->
+                
                 <div class="form-group">
-                  <label class="control-label">Email</label>
-                  <input type="text" class="form-control" placeholder="Enter an email address" name="email">
+                  <label class="control-label">Budget</label>
+                  <input type="text" class="form-control" placeholder="Enter you budget" name="budget">
                 </div>
+
                 <div class="form-group">
                   <label class="control-label">Closing Date <span>(optional)</span></label>
                   <input type="text" class="form-control datepicker" placeholder="DD-MM-YYYY" name="closing_date" >
-                </div> 
-                <div class="divider">
-                  <h3 class="job-title">Company Details</h3>
-                </div>
-                <div class="form-group">
-                  <label class="control-label">Company Name</label>
-                  <input type="text" class="form-control" placeholder="Enter the name of the company" name="company_name">
-                </div> 
-                <div class="form-group">
-                  <label class="control-label">Location <span>(optional)</span></label>
-                  <input type="text" class="form-control" placeholder="e.g.London" name="location">
-                </div> 
-                <div class="form-group">
-                  <label class="control-label">Website <span>(optional)</span></label>
-                  <input type="text" class="form-control" placeholder="http://" name="website">
-                </div> 
-                <div class="form-group">
-                  <label class="control-label">Tagline <span>(optional)</span></label>
-                  <textarea class="form-control" placeholder="Briefly describe your company" name="tagline"></textarea>
-                </div>     
+                </div>                
 
                 <div class="form-group">
-                  <label class="control-label">Job Details <span>(File can be in pdf,docx,doc,png,jpeg,jpeg)</span> </label>
-                  <input type="file" class="form-control" id="validatedCustomFile" name="job_file">
+                  <label class="control-label">Attachments <span>(File can be in pdf,docx,doc,png,jpeg,jpeg)</span> </label>
+                  <input type="file" class="form-control" id="validatedCustomFile" name="job_file[]" multiple="">
                 </div>
 
                 <div class="divider">

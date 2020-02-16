@@ -8,6 +8,7 @@ use Auth;
 use App\User;
 use App\JobCategory;
 use App\PostJob;
+use App\PostFiles;
 use App\Milestones;
 use App\Bid;
 use App\BidPackages;
@@ -34,20 +35,15 @@ class HomeController extends Controller
     public function index()
     {
         $user=Auth::user();
-        $user_id=$user->id;
+        $user_id=$user->id;        
 
-        if($user->user_type==1){ //Hire
-           return view('hire_dashboard');
-        }else{ //Work
-
-            $user_bid_packages=UserBidPackages::where('user_id',$user_id)->where('status',1)->where('balance_bids','>',0)->first();
-            
-            if(!$user_bid_packages){
-                return redirect('/package')->with('flash_error','Your biding limit are over, Kindly update your package for further biding...');
-            }
-
-            return view('work_dashboard');
+        $user_bid_packages=UserBidPackages::where('user_id',$user_id)->where('status',1)->where('balance_bids','>',0)->first();
+        
+        if(!$user_bid_packages){
+            return redirect('/package')->with('flash_error','Your biding limit are over, Kindly update your package for further biding...');
         }
+
+        return view('work_dashboard');
     }
 
     public function package()
@@ -79,12 +75,17 @@ class HomeController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string',
+            'profile_image' => 'mimes:jpeg,jpg,bmp,png|max:5242880',
         ]);
 
         try{
 
             $user=Auth::user();        
             $user->name=$request->name;
+            $user->description=$request->description;
+            if($request->hasFile('profile_image')) {
+                $user->profile_image = 'storage/'.$request->profile_image->store('profile_image');
+            }
             $user->save();
 
             return back()->with('flash_success','Profile updated successfully');
@@ -96,7 +97,6 @@ class HomeController extends Controller
     }
 
     //Change Password
-
     public function update_password(Request $request)
     {
         $this->validate($request, [
@@ -127,25 +127,7 @@ class HomeController extends Controller
         } else {
             return back()->with('flash_error', trans('user.profiles.current_wrong_pwd'));
         }
-    }
-
-    public function jobs(Request $request)
-    {
-        $user=Auth::user();
-        $jobs=PostJob::whereIn('status',[0,1]);
-
-        $keyword=$request->keyword;
-        $location=$request->location;
-        if($keyword){
-            $jobs=$jobs->where('job_title','LIKE', "%{$keyword}%")->orWhere('company_name','LIKE', "%{$keyword}%");
-        }
-        if($location){
-            $jobs=$jobs->where('location','LIKE', "%{$location}%");
-        }
-        $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(10);
-
-        return view('job.job_list',compact('jobs'));
-    }
+    }    
 
     public function jobList(Request $request)
     {
@@ -161,7 +143,7 @@ class HomeController extends Controller
         if($location){
             $jobs=$jobs->where('location','LIKE', "%{$location}%");
         }
-        $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(10);
+        $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(15);
         
         return view('job.job_list',compact('jobs'));
     }
@@ -197,7 +179,7 @@ class HomeController extends Controller
             'job_title' => 'required',
             'category_id' => 'required',            
             'job_description' => 'required',            
-            'job_file' => 'mimes:pdf,docx,doc,png,jpg,jpeg',            
+            'job_file.*' => 'mimes:pdf,docx,doc,png,jpg,jpeg',            
         ]);
 
         try{
@@ -210,10 +192,7 @@ class HomeController extends Controller
             $job->job_title=$request->job_title;
             $job->category_id=$request->category_id;
             $job->job_tags=$request->job_tags;
-            $job->description=$request->job_description;
-            if($request->hasFile('job_file')) {
-                $job->job_file = 'storage/'.$request->job_file->store('job_file');
-            }
+            $job->description=$request->job_description;            
             $job->closing_date=date('Y-m-d',strtotime($request->company_name));
             $job->company_name=$request->company_name;
             $job->location=$request->location;
@@ -222,6 +201,13 @@ class HomeController extends Controller
             $job->tagline=$request->tagline;
             $job->status=0;
             $job->save();
+
+            foreach ($request->job_file as $key => $value) {
+                $job_image=new PostFiles;
+                $job_image->post_job_id = $job->id;
+                $job_image->document = 'storage/'.$value->store('job_file');
+                $job_image->save();
+            }
 
             foreach ($request->milestone as $key => $value) {
                 $milestone=new Milestones;
@@ -241,7 +227,7 @@ class HomeController extends Controller
 
     public function editPost($id)
     {
-        $job=PostJob::where('id',$id)->with('milestone')->first();
+        $job=PostJob::where('id',$id)->with('jobFiles')->with('milestone')->first();
         //dd($job);
         $category=JobCategory::get();
         return view('job.edit_post_job',compact('job','category'));
@@ -253,7 +239,7 @@ class HomeController extends Controller
             'job_title' => 'required',
             'category_id' => 'required',            
             'job_description' => 'required',            
-            'job_file' => 'mimes:pdf,docx,doc,png,jpg,jpeg',            
+            'job_file.*' => 'mimes:pdf,docx,doc,png,jpg,jpeg',            
         ]);
 
         try{
@@ -279,6 +265,13 @@ class HomeController extends Controller
             $job->status=0;
             $job->save();
 
+            foreach ($request->job_file as $key => $value) {
+                $job_image=new PostFiles;
+                $job_image->post_job_id = $job->id;
+                $job_image->document = 'storage/'.$value->store('job_file');
+                $job_image->save();
+            }
+
             Milestones::where('post_job_id',$id)->delete();
 
             foreach ($request->milestone as $key => $value) {
@@ -296,22 +289,7 @@ class HomeController extends Controller
         }
     }
 
-    public function viewPost($id)
-    {
-        $user=Auth::user();
-        
-        $job=PostJob::where('id',$id)->with('milestone')->with('bid')->first();
-        //dd($job);
-
-        if(($user->user_type==1) && ($job->user_id != $user->id)){
-           return back()->with('flash_error','You are not allowed to perform this operation');
-        }
-        $category=JobCategory::get();
-
-        $user_bid_packages=UserBidPackages::where('user_id',$user->id)->where('status',1)->first();
-
-        return view('job.view_post_job',compact('user','job','category','user_bid_packages'));
-    }
+    
     
     public function bidJob(Request $request, $post_id)
     {

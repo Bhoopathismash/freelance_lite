@@ -38,6 +38,9 @@ Route::group(['prefix' => 'admin'], function () {
 });
 
 
+Route::get('/jobs', 'StaticController@jobs')->name('jobs');
+Route::get('/view_post/{id}', 'StaticController@viewPost')->name('viewPost');
+
 Auth::routes();
 
 Route::get('/dashboard', 'HomeController@index')->name('dashboard');
@@ -45,7 +48,7 @@ Route::get('/package', 'HomeController@package')->name('package');
 //Route::get('/user_package/{id}', 'HomeController@userPackage')->name('userPackage');
 
 Route::get('/profile', 'HomeController@profile')->name('profile');
-Route::get('/profile_update', 'HomeController@profileUpdate')->name('profileUpdate');
+Route::post('/profile_update', 'HomeController@profileUpdate')->name('profileUpdate');
 Route::post('/change/password', 'HomeController@update_password');
 
 //Job Hire
@@ -57,8 +60,6 @@ Route::post('/post_job_update/{id}', 'HomeController@postJobUpdate')->name('post
 
 
 Route::get('/my_jobs', 'HomeController@myJobs')->name('myJobs');
-Route::get('/jobs', 'HomeController@jobs')->name('jobs');
-Route::get('/view_post/{id}', 'HomeController@viewPost')->name('viewPost');
 
 
 Route::post('/bid_job/{post_id}', 'HomeController@bidJob')->name('bidJob');

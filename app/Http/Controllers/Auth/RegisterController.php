@@ -106,18 +106,16 @@ class RegisterController extends Controller
 
         event(new Registered($user = $this->create($request->all())));
 
-        if($user->user_type==2){
-            $bid_package=BidPackages::where('amount',0)->first();
+        $bid_package=BidPackages::where('amount',0)->first();
 
-            $user_bid_packages= new UserBidPackages;
-            $user_bid_packages->user_id=$user->id;
-            $user_bid_packages->package_id=$bid_package->id;
-            $user_bid_packages->total_bids=$bid_package->no_of_bids;
-            $user_bid_packages->used_bids=0;
-            $user_bid_packages->balance_bids=$bid_package->no_of_bids;
-            $user_bid_packages->status=1;
-            $user_bid_packages->save();            
-        }
+        $user_bid_packages= new UserBidPackages;
+        $user_bid_packages->user_id=$user->id;
+        $user_bid_packages->package_id=$bid_package->id;
+        $user_bid_packages->total_bids=$bid_package->no_of_bids;
+        $user_bid_packages->used_bids=0;
+        $user_bid_packages->balance_bids=$bid_package->no_of_bids;
+        $user_bid_packages->status=1;
+        $user_bid_packages->save();            
 
         \Session::flash('flash_success','Account created successfully, verify your account by your welcome mail from your mail account...');
         return redirect('/login');

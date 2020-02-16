@@ -26,13 +26,13 @@
                     startDate:new Date()
                 });
 
-            $('#summernote').summernote();
-            $('#summernot1e').summernote({
-                height: 250,                 // set editor height
-                minHeight: null,             // set minimum height of editor
-                maxHeight: null,             // set maximum height of editor
-                focus: false                 // set focus to editable area after initializing summernote
+            $('#summernote').summernote({
+              toolbar: [
+                ['style', ['bold', 'italic']],
+                ['insert', ['link']],
+              ]
             });
+            
         });
       
     </script>

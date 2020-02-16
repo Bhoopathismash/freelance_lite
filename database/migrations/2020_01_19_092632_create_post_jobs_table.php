@@ -20,13 +20,13 @@ class CreatePostJobsTable extends Migration
             $table->integer('category_id');
             $table->string('job_tags');
             $table->text('description');
-            $table->string('job_file');
+            $table->double('budget',15,5)->default(0);
             $table->string('company_name')->nullable();
             $table->string('location')->nullable();
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('website')->nullable();
             $table->date('closing_date')->nullable();
-            $table->mediumText('tagline');
+            $table->mediumText('tagline')->nullable();
             /*$table->integer('expected_working_days')->default(0);
             $table->integer('expected_working_hours')->default(0);
             $table->integer('taken_working_days')->default(0);

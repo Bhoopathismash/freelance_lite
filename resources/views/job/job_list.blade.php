@@ -7,7 +7,7 @@
         <div class="row">         
           <div class="col-lg-12">
             <div class="inner-header">
-              <h3>{{Request::is('my_jobs') ? 'My' : ''}} Jobs</h3>
+              <h3>{{Request::is('joblist') ? 'My Projects' : 'Projects Taken'}} </h3>
             </div>
           </div>
         </div>
@@ -63,10 +63,12 @@
                   </div>
                   
                   <div class="col-lg-4 col-md-4 col-xs-12 text-right">
-                    @if(Auth::user()->user_type==1)
-                      <a href="{{route('editPost',$value->id)}}" class="btn-apply">Edit</a>
+                    @if(Auth::user())
+                      @if(Auth::user()->user_type==1)
+                        <a href="{{route('editPost',$value->id)}}" class="btn-apply">Edit</a>
+                      @endif
                     @endif
-                    <a href="{{route('viewPost',$value->id)}}" class="btn-apply">@if(Auth::user()->user_type==1 || Request::is('my_jobs') ) View @else Apply Now @endif</a>                    
+                    <a href="{{route('viewPost',$value->id)}}" class="btn-apply">@if(Auth::user()) @if(Auth::user()->user_type==1 || Request::is('my_jobs') ) View @else Apply Now @endif @else Apply Now @endif</a>                    
                   </div>
                 </div>
               </div>

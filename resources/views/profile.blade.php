@@ -1,4 +1,4 @@
-@extends('layouts.base')
+  @extends('layouts.base')
 
 @section('content')
   <!-- Page Header Start -->
@@ -24,21 +24,94 @@
               <div class="row">
                 <div class="col-lg-6">
                   <h3 class="job-title">Profile</h3>
-                  <div class="form-group">
-                    <label>Email</label>
-                    <input id="email" class="form-control"  value="{{ $user->email }}" readonly>                    
-                  </div>                             
-                  <form method="POST" action="{{ route('profileUpdate') }}" >
+                   
+
+                  <form method="POST" action="{{ route('profileUpdate') }}" enctype="multipart/form-data">
                     @csrf
+                    
                     <div class="form-group">
+                      <label>Profile Image</label><br>
+                      <img  @if($user->profile_image) src="{{$user->profile_image}}" @else src="/assets/img/user-icon.png" @endif   class="img-thumbnail float-left" width='100' />
+                      
+                      <input id="profile_image" type="file" class="form-control" name="profile_image" style="width: 80%; margin-left: 10px; " />
+                    </div>
+
+                    <div class="form-group clear">
+                      <br>
                       <label>Name</label>
                       <input id="name" type="text" class="form-control" name="name" value="{{ $user->name }}" required autofocus placeholder="Name">
                     </div>
-                    <button class="btn btn-common log-btn mt-3" type="submit" >Update</button>
+
+                    <div class="form-group">
+                      <label>Description</label>
+                      <input id="description" type="text" class="form-control" name="description" value="{{ $user->description }}" placeholder="Description">
+                    </div>
+
+                    <div class="form-group">
+                      @if($user->email_verified==1)
+                        <p><span class="text-success"><b><i class="lni-check-mark-circle"></i></b></span> Email Verified</p>
+                      @else
+                        <p><span class="text-danger"><b><i class="lni-cross-circle"></i></b></span> Email Not Verified</p>
+                      @endif
+                    </div>
+
+                    <div class="form-group">
+                      @if($user->admin_verified==1)
+                        <p><span class="text-success"><b><i class="lni-check-mark-circle"></i></b></span> Admin Verified</p>
+                      @else
+                        <p><span class="text-danger"><b><i class="lni-cross-circle"></i></b></span> Admin Not Verified</p>
+                      @endif
+                    </div>
+                    
+                    <div class="form-group">
+                      <button class="btn btn-common log-btn mt-3" type="submit" >Update</button>
+                    </div>
                   </form>
                 </div>
 
-                @if($user_bid_packages && $user->user_type==2)
+                <div class="col-lg-6">
+                  <h3 class="job-title">Change E-mail</h3>
+                  <h6>Change email with caution</h6>
+                  <form method="POST" action="{{ route('profileUpdate') }}" >
+                    @csrf
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input id="email" class="form-control"  value="{{ $user->email }}" readonly>
+                    </div>
+                    <div class="form-group">
+                      <button class="btn btn-common log-btn mt-3" type="submit" >Update</button>
+                    </div>
+                  </form>   
+
+                </div>
+               
+              </div>
+              <br>
+              <div class="row">
+                  
+                  <div class="col-lg-6">
+                      <form action="{{url('/change/password')}}" method="POST">
+                        {{ csrf_field() }}
+                        <div class="security-content">
+                            <h3 class="job-title">Change Password</h3>
+                            <div class="form-group">                  
+                              <label>Current Password</label>
+                                <input type="password" id="current_password" name="current_password" class="form-control"autocomplete="off" required="">
+                            </div>
+                            <div class="form-group">
+                              <label>New Password</label>
+                                <input type="password" id="new_password" name="password" class="form-control" autocomplete="off" required="" >
+                            </div>
+                            <div class="form-group">
+                              <label>New Password Confirmation</label>
+                                <input type="password" id="conform_passwordRepeat" name="password_confirmation" class="form-control" required="">
+                            </div>
+                            <button type="submit" class="btn btn-common">Change Password</button>
+                        </div>
+                      </form>
+                  </div>
+
+                  @if($user_bid_packages && $user->user_type==2)
                   <div class="col-lg-6">
                     <h3 class="job-title">Bids</h3>                    
                     <div class="float-left">  
@@ -62,36 +135,6 @@
                   </div>
 
                 @endif
-              </div>
-              <br>
-              <div class="row">
-                  <div class="col-lg-6">
-                      <div class="security-content">
-                          <h3 class="job-title">Password</h3>
-                          <h6>Create a new password for your account</h6>
-                      </div>
-                  </div>
-                  <div class="col-lg-6">
-                      <form action="{{url('/change/password')}}" method="POST">
-                        {{ csrf_field() }}
-                        <div class="security-content">
-                            <h3 class="job-title">Change Password</h3>
-                            <div class="form-group">                  
-                              <label>Current Password</label>
-                                <input type="password" id="current_password" name="current_password" class="form-control"autocomplete="off" required="">
-                            </div>
-                            <div class="form-group">
-                              <label>New Password</label>
-                                <input type="password" id="new_password" name="password" class="form-control" autocomplete="off" required="" >
-                            </div>
-                            <div class="form-group">
-                              <label>New Password Confirmation</label>
-                                <input type="password" id="conform_passwordRepeat" name="password_confirmation" class="form-control" required="">
-                            </div>
-                            <button type="submit" class="btn btn-common">Change Password</button>
-                        </div>
-                      </form>
-                  </div>
               </div>
             </div>
           </div>

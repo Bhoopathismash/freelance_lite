@@ -20,8 +20,12 @@ class PostJob extends Model
     	return $this->hasOne('App\JobCategory','id','category_id');
     }
 
+    public function jobFiles(){
+    	return $this->hasMany('App\PostFiles','post_job_id','id');
+    }
+
     public function milestone(){
-    	return $this->hasMany('App\Milestones','post_job_id','id');
+        return $this->hasMany('App\Milestones','post_job_id','id');
     }
 
     public function bid(){
