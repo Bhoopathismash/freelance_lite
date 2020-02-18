@@ -43,6 +43,14 @@
               <br>
               {!!html_entity_decode($job->description)!!}
 
+              <div class="content-area">  
+                <h4>Attachments</h4>
+                @forelse($job->jobFiles as $key => $value)
+                   <a href="/{{$value->document}}" class="btn btn-default" download> <i class="lni-download"></i> File {{$key+1}}</a>
+                @empty
+                  <p>No Files Added</p>
+                @endforelse
+              </div>
               @if($user)
                 @if(($user->id==$job->user_id || $user->id==$job->assigned_to) && $job->status > 0)
                   <h5>Milestones</h5>
