@@ -38,31 +38,44 @@
             @foreach($jobs as $index => $value)
               <div class="job-listings">
                 <div class="row">
-                  <div class="col-lg-4 col-md-4 col-xs-12">
+                  <div class="col-lg-3 col-md-3 col-xs-12">
                     <div class="job-company-logo">
                       <img src="assets/img/features/img1.png" alt="">
                     </div>
                     <div class="job-details">
-                      <h3>{{$value->job_title}}</h3>
-                      <span class="company-neme">
+                      <h3 class="text-capitalize">{{$value->job_title}}</h3>
+                      <!-- <span class="company-neme">
                         {{@$value->company_name}}
-                      </span>
+                      </span> -->
                     </div>
                   </div>
-                  <div class="col-lg-2 col-md-2 col-xs-12 text-center">
+                  <div class="col-lg-1 col-md-1 col-xs-12 text-center">
                     @if($value->category)
                       <span class="btn-open">
                         {{$value->category->category_name}}
                       </span>
                     @endif
                   </div>
+                  <!-- <div class="col-lg-2 col-md-2 col-xs-12 text-right">
+                   {{substr(html_entity_decode($value->description),0,10)}}
+                  </div> -->
+
                   <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                   <div class="location">
-                     <i class="lni-map-marker"></i> {{@$value->location}}
-                   </div>
+                   {{$value->budget}}
+                  </div>
+
+                  <div class="col-lg-2 col-md-2 col-xs-12 text-right">
+                    <?php $tags=explode(',', $value->job_tags); ?>
+                    @foreach($tags as $value1)
+                      <a href="" class="btn btn-default">{{$value1}}</a>
+                    @endforeach
+                  </div>
+
+                  <div class="col-lg-1 col-md-1 col-xs-12 text-right">
+                   {{date('F d, Y',strtotime($value->created_at))}}
                   </div>
                   
-                  <div class="col-lg-4 col-md-4 col-xs-12 text-right">
+                  <div class="col-lg-3 col-md-3 col-xs-12 text-right">
                     @if(Auth::user())
                       @if(Auth::user()->user_type==1)
                         <a href="{{route('editPost',$value->id)}}" class="btn-apply">Edit</a>
