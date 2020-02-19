@@ -132,11 +132,15 @@ class HomeController extends Controller
     public function jobList(Request $request)
     {
         $user=Auth::user();
-
+        $category=JobCategory::where('status',1)->get();
         $jobs=PostJob::where('user_id',$user->id);
 
         $keyword=$request->keyword;
         $location=$request->location;
+        $category_id=$request->category_id;
+        if($category_id){
+            $jobs=$jobs->where('category_id',$category_id);
+        }
         if($keyword){
             $jobs=$jobs->where('job_title','LIKE', "%{$keyword}%")->orWhere('company_name','LIKE', "%{$keyword}%");
         }
@@ -145,16 +149,21 @@ class HomeController extends Controller
         }
         $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(15);
         
-        return view('job.job_list',compact('jobs'));
+        return view('job.job_list',compact('jobs','category'));
     }
 
     public function myJobs(Request $request){
         $user=Auth::user();
-
+        $category=JobCategory::where('status',1)->get();
         $jobs=PostJob::where('assigned_to',$user->id);
-
+        
+        $category_id=$request->category_id;
         $keyword=$request->keyword;
         $location=$request->location;
+
+        if($category_id){
+            $jobs=$jobs->where('category_id',$category_id);
+        }
         if($keyword){
             $jobs=$jobs->where('job_title','LIKE', "%{$keyword}%")->orWhere('company_name','LIKE', "%{$keyword}%");
         }
@@ -163,7 +172,7 @@ class HomeController extends Controller
         }
         $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(10);
         
-        return view('job.job_list',compact('jobs'));
+        return view('job.job_list',compact('jobs','category'));
     }
 
     public function postJob()

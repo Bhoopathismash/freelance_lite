@@ -36,15 +36,7 @@
                         <option value="">Select Category</option>
                         @foreach($category as $value)
                           <option value="{{$value->id}}">{{$value->category_name}}</option>
-                        @endforeach
-                        <!-- <option>Finance</option>
-                        <option>IT & Engineering</option>
-                        <option>Education/Training</option>
-                        <option>Art/Design</option>
-                        <option>Sale/Markting</option>
-                        <option>Healthcare</option>
-                        <option>Science</option>                              
-                        <option>Food Services</option> -->
+                        @endforeach                        
                       </select>
                     </label>
                   </div>

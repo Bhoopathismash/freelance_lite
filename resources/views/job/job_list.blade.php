@@ -22,11 +22,19 @@
           <div class="col-lg-12 col-md-12 col-xs-12">
             <form action="{{route('jobList')}}" method="GET">
             <div class="wrap-search-filter row">
-                <div class="col-lg-5 col-md-5 col-xs-12">
+                <div class="col-lg-3 col-md-3 col-xs-12">
                   <input type="text" class="form-control" placeholder="Keyword: Name, Tag" name="keyword">
                 </div>
-                <div class="col-lg-5 col-md-5 col-xs-12">
+                <div class="col-lg-3 col-md-3 col-xs-12">
                   <input type="text" class="form-control" placeholder="Location: City, State, Zip" name="location">
+                </div>
+                <div class="col-lg-3 col-md-3 col-xs-12">
+                  <select class="form-control" name="category_id" required>
+                    <option value="">Select Category</option>
+                    @foreach($category as $value)
+                      <option value="{{$value->id}}">{{$value->category_name}}</option>
+                    @endforeach                        
+                  </select>
                 </div>
                 <div class="col-lg-2 col-md-2 col-xs-12">
                   <button type="submit" class="btn btn-common float-right">Filter</button>

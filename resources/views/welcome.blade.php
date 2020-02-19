@@ -18,8 +18,8 @@
                   <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     <h2 class="wow fadeInRight" data-wow-delay="0.4s">Find the career you <br> deserve</h2>
                     <p class="wow fadeInRight" data-wow-delay="0.6s">Aliquam vestibulum cursus felis. In iaculis iaculis sapien ac condimentum. <br> Vestibulum congue posuere lacus, id tincidunt nisi porta sit amet.</p>
-                    <a href="#" class="btn btn-lg btn-common btn-effect wow fadeInRight" data-wow-delay="0.9s">See our jobs</a>
-                    <a href="#" class="btn btn-lg btn-border wow fadeInRight" data-wow-delay="1.2s">Search jobs</a>
+                    <a href="{{route('jobs')}}" class="btn btn-lg btn-common btn-effect wow fadeInRight" data-wow-delay="0.9s">See our jobs</a>
+                    <a href="{{route('jobs')}}" class="btn btn-lg btn-border wow fadeInRight" data-wow-delay="1.2s">Search jobs</a>
                   </div>
                   <div class="col-lg-6 col-md-6 col-sm-4 col-xs-12">
                     <div class="img-wrapper wow fadeInUp" data-wow-delay="0.6s">
@@ -36,7 +36,7 @@
                   <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     <h2 class="wow fadeInUp" data-wow-delay="0.4s">Find the career you <br> deserve</h2>
                     <p class="wow fadeInUp" data-wow-delay="0.6s">Aliquam vestibulum cursus felis. In iaculis iaculis sapien ac condimentum. <br> Vestibulum congue posuere lacus, id tincidunt nisi porta sit amet.</p>
-                    <a href="#" class="btn btn-lg btn-common btn-effect wow fadeInUp" data-wow-delay="0.9s">See our jobs</a>
+                    <a href="{{route('jobs')}}" class="btn btn-lg btn-common btn-effect wow fadeInUp" data-wow-delay="0.9s">See our jobs</a>
                   </div>
                   <div class="col-lg-6 col-md-6 col-sm-4 col-xs-12">
                     <div class="img-wrapper wow fadeInUp" data-wow-delay="0.6s">
@@ -53,8 +53,8 @@
                   <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     <h2 class="wow fadeInRight" data-wow-delay="0.4s">Find the career you <br> deserve</h2>
                     <p class="wow fadeInRight" data-wow-delay="0.6s">Aliquam vestibulum cursus felis. In iaculis iaculis sapien ac condimentum. <br> Vestibulum congue posuere lacus, id tincidunt nisi porta sit amet.</p>
-                    <a href="#" class="btn btn-lg btn-common btn-effect wow fadeInRight" data-wow-delay="0.9s">See our jobs</a>
-                    <a href="#" class="btn btn-lg btn-border wow fadeInRight" data-wow-delay="1.2s">Search jobs</a>
+                    <a href="{{route('jobs')}}" class="btn btn-lg btn-common btn-effect wow fadeInRight" data-wow-delay="0.9s">See our jobs</a>
+                    <a href="{{route('jobs')}}" class="btn btn-lg btn-border wow fadeInRight" data-wow-delay="1.2s">Search jobs</a>
                   </div>
                   <div class="col-lg-6 col-md-6 col-sm-4 col-xs-12">
                     <div class="img-wrapper wow fadeInUp" data-wow-delay="0.6s">
@@ -86,86 +86,20 @@
           <p>As the world's #1 job site, with over 200 million unique visitors every month from over 60 different countries</p>
         </div>
         <div class="row">
-          <div class="col-lg-6 col-md-12 col-xs-12">
-            <a href="browse-categories.html" class="img-box">
-              <div class="img-box-content">
-                <h4>Healthcare</h4>
-                <span>3420 Jobs</span>
-              </div>
-              <div class="img-box-background">
-                <img class="img-fluid" src="assets/img/catagories/img1.jpg" alt="">
-              </div>
-            </a>
-          </div>
-          <div class="col-lg-6 col-md-12 col-xs-12">
-            <div class="row">
-              <div class="col-lg-6 col-md-6 col-xs-12">
-                <a href="browse-categories.html" class="img-box">
-                  <div class="img-box-content">
-                    <h4>Education</h4>
-                    <span>2379 Jobs</span>
-                  </div>
-                  <div class="img-box-background">
-                    <img class="img-fluid" src="assets/img/catagories/img2.jpg" alt="">
-                  </div>
-                </a>
-              </div>
-              <div class="col-lg-6 col-md-6 col-xs-12">
-                <a href="browse-categories.html" class="img-box">
-                  <div class="img-box-content">
-                    <h4>Business</h4>
-                    <span>1560 Jobs</span>
-                  </div>
-                  <div class="img-box-background">
-                    <img class="img-fluid" src="assets/img/catagories/img3.jpg" alt="">
-                  </div>
-                </a>
-              </div>
+          @foreach($category as $value)
+            <div class="col-lg-3 col-md-12 col-xs-12">
+              <a href="/joblist?category_id=2" class="img-box">
+                <div class="img-box-content">
+                  <h4>{{$value->category_name}}</h4>
+                  <span>{{$value->jobpost->count()}} Jobs</span>
+                </div>
+                <div class="img-box-background">
+                  <img class="img-fluid" src="assets/img/catagories/img1.jpg" alt="">
+                </div>
+              </a>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-6 col-md-12 col-xs-12">
-            <div class="row">
-              <div class="col-lg-6 col-md-6 col-xs-12">
-                <a href="browse-categories.html" class="img-box">
-                  <div class="img-box-content">
-                    <h4>Finance</h4>
-                    <span>2000 Jobs</span>
-                  </div>
-                  <div class="img-box-background">
-                    <img class="img-fluid" src="assets/img/catagories/img4.jpg" alt="">
-                  </div>
-                </a>
-              </div>
-              <div class="col-lg-6 col-md-6 col-xs-12">
-                <a href="browse-categories.html" class="img-box">
-                  <div class="img-box-content">
-                    <h4>Support</h4>
-                    <span>3340 Jobs</span>
-                  </div>
-                  <div class="img-box-background">
-                    <img class="img-fluid" src="assets/img/catagories/img5.jpg" alt="">
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-md-12 col-xs-12">
-            <a href="browse-categories.html" class="img-box">
-              <div class="img-box-content">
-                <h4>Law</h4>
-                <span>1200 Jobs</span>
-              </div>
-              <div class="img-box-background">
-                <img class="img-fluid" src="assets/img/catagories/img6.jpg" alt="">
-              </div>
-            </a>
-          </div>
-          <div class="col-12 text-center mt-4">
-            <a href="#" class="btn btn-common">browse more</a>
-          </div>
-        </div> 
+          @endforeach 
+        </div>        
       </div>
     </section>
     <!-- Browse Catagories Section End -->

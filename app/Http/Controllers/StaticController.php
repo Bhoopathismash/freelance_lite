@@ -30,23 +30,27 @@ class StaticController extends Controller
         if(Auth::check()){
             $user=Auth::user();
             $user_id=$user->id;
-            if($user->user_type==2){ //Work
-                $user_bid_packages=UserBidPackages::where('user_id',$user_id)->where('status',1)->where('balance_bids','>',0)->first();                
-                if(!$user_bid_packages){
-                    return redirect('/package')->with('flash_error','Your biding limit are over, Kindly update your package for further biding...');
-                }
+            $user_bid_packages=UserBidPackages::where('user_id',$user_id)->where('status',1)->where('balance_bids','>',0)->first();                
+            if(!$user_bid_packages){
+                return redirect('/package')->with('flash_error','Your biding limit are over, Kindly update your package for further biding...');
             }
         }
-        return view('welcome');
+
+        $category=JobCategory::where('status',1)->get();
+        return view('welcome', compact('category'));
     }
 
     public function jobs(Request $request)
     {
         $user=Auth::user();
+        $category=JobCategory::where('status',1)->get();
         $jobs=PostJob::whereIn('status',[0,1]);
-
+        $category_id=$request->category_id;
         $keyword=$request->keyword;
         $location=$request->location;
+        if($category_id){
+            $jobs=$jobs->where('category_id',$category_id);
+        }
         if($keyword){
             $jobs=$jobs->where('job_title','LIKE', "%{$keyword}%")->orWhere('company_name','LIKE', "%{$keyword}%");
         }
@@ -55,7 +59,7 @@ class StaticController extends Controller
         }
         $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(10);
 
-        return view('job.job_list',compact('jobs'));
+        return view('job.job_list',compact('jobs','category'));
     }
 
     public function viewPost($id)
