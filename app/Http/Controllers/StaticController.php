@@ -35,9 +35,9 @@ class StaticController extends Controller
                 return redirect('/package')->with('flash_error','Your biding limit are over, Kindly update your package for further biding...');
             }
         }
-
+        $jobs=PostJob::whereIn('status',[0,1])->orderBy('created_at', 'DESC')->take(5)->get();
         $category=JobCategory::where('status',1)->get();
-        return view('welcome', compact('category'));
+        return view('welcome', compact('category','jobs'));
     }
 
     public function jobs(Request $request)

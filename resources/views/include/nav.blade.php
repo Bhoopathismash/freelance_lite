@@ -41,12 +41,14 @@
                   <li class="nav-item {{ Request::is('joblist') ? 'active' : '' }}">
                     <a href="{{route('jobList')}}" class="nav-link">My Projects</a>
                   </li>                               
-
+                @endif
                   
                   <li class="nav-item {{ Request::is('post_job') ? 'active' : '' }}">
                     <a href="{{route('postJob')}}" class="nav-link">Post a Job</a>
                   </li>
-
+                
+                @if(Auth::check())
+                  
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle  text-capitalize" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <img  @if($nav_user->profile_image) src="{{$nav_user->profile_image}}" @else src="/assets/img/user-icon.png" @endif   class="img-thumbnail" width='50' /> &nbsp; {{$nav_user->name}} <i class="lni-chevron-down"></i>

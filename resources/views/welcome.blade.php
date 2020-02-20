@@ -105,7 +105,7 @@
     <!-- Browse Catagories Section End -->
 
     <!-- Featured Section Start -->
-    <section id="featured" class="section bg-cyan">
+   <!--  <section id="featured" class="section bg-cyan">
       <div class="container">
         <div class="section-header">  
           <h2 class="section-title">Featured Jobs</h2>
@@ -213,11 +213,11 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
     <!-- Featured Section End -->
  
     <!-- Featured Listings Start -->
-    <section class="featured-lis section">
+    <!-- <section class="featured-lis section">
       <div class="container">
         <div class="section-header">  
           <h2 class="section-title">Top Hiring Companies</h2>
@@ -303,7 +303,7 @@
           </div>
         </div> 
       </div>
-    </section>
+    </section> -->
     <!-- Featured Listings End -->
 
     <!-- Listings Section Start -->
@@ -315,133 +315,60 @@
         </div>
         <div class="row">
           <div class="col-lg-12 col-md-12 col-xs-12">
-            <a class="job-listings" href="job-details.html">
-              <div class="row">
-                <div class="col-lg-4 col-md-4 col-xs-12">
-                  <div class="job-company-logo">
-                    <img src="assets/img/features/img1.png" alt="">
+             @foreach($jobs as $index => $value)
+              <div class="job-listings">
+                <div class="row">
+                  <div class="col-lg-3 col-md-3 col-xs-12">
+                    <div class="job-company-logo">
+                      <img src="assets/img/features/img1.png" alt="">
+                    </div>
+                    <div class="job-details">
+                      <h3 class="text-capitalize">{{$value->job_title}}</h3>
+                      <!-- <span class="company-neme">
+                        {{@$value->company_name}}
+                      </span> -->
+                    </div>
                   </div>
-                  <div class="job-details">
-                    <h3>App Developer</h3>
-                    <span class="company-neme">
-                      AmazeSoft
-                    </span>
+                  <div class="col-lg-1 col-md-1 col-xs-12 text-center">
+                    @if($value->category)
+                      <span class="btn-open">
+                        {{$value->category->category_name}}
+                      </span>
+                    @endif
                   </div>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-center">
-                  <span class="btn-open">
-                    7 Open Jobs
-                  </span>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                 <div class="location">
-                   <i class="lni-map-marker"></i> New Yourk, US
-                 </div>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                  <span class="btn-full-time">Full Time</span>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                  <span class="btn-apply">Apply Now</span>
+                  <!-- <div class="col-lg-2 col-md-2 col-xs-12 text-right">
+                   {{substr(html_entity_decode($value->description),0,10)}}
+                  </div> -->
+
+                  <div class="col-lg-2 col-md-2 col-xs-12 text-right">
+                   {{$value->budget}}
+                  </div>
+
+                  <div class="col-lg-2 col-md-2 col-xs-12 text-right">
+                    <?php $tags=explode(',', $value->job_tags); ?>
+                    @foreach($tags as $value1)
+                      <a href="" class="btn btn-default">{{$value1}}</a>
+                    @endforeach
+                  </div>
+
+                  <div class="col-lg-1 col-md-1 col-xs-12 text-right">
+                   {{date('F d, Y',strtotime($value->created_at))}}
+                  </div>
+                  
+                  <div class="col-lg-3 col-md-3 col-xs-12 text-right">
+                    @if(Auth::user())
+                      @if(Auth::user()->user_type==1)
+                        <a href="{{route('editPost',$value->id)}}" class="btn-apply">Edit</a>
+                      @endif
+                    @endif
+                    <a href="{{route('viewPost',$value->id)}}" class="btn-apply">@if(Auth::user()) @if(Auth::user()->user_type==1 || Request::is('my_jobs') ) View @else Apply Now @endif @else Apply Now @endif</a>                    
+                  </div>
                 </div>
               </div>
-            </a>
-            <a class="job-listings" href="job-details.html">
-              <div class="row">
-                <div class="col-lg-4 col-md-4 col-xs-12">
-                  <div class="job-company-logo">
-                    <img src="assets/img/features/img2.png" alt="">
-                  </div>
-                  <div class="job-details">
-                    <h3>App Developer</h3>
-                    <span class="company-neme">
-                      AmazeSoft
-                    </span>
-                  </div>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-center">
-                  <span class="btn-open">
-                    7 Open Jobs
-                  </span>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                 <div class="location">
-                   <i class="lni-map-marker"></i> New Yourk, US
-                 </div>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                  <span class="btn-full-time">Full Time</span>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                  <span class="btn-apply">Apply Now</span>
-                </div>
-              </div>
-            </a>
-            <a class="job-listings" href="job-details.html">
-              <div class="row">
-                <div class="col-lg-4 col-md-4 col-xs-12">
-                  <div class="job-company-logo">
-                    <img src="assets/img/features/img3.png" alt="">
-                  </div>
-                  <div class="job-details">
-                    <h3>App Developer</h3>
-                    <span class="company-neme">
-                      AmazeSoft
-                    </span>
-                  </div>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-center">
-                  <span class="btn-open">
-                    7 Open Jobs
-                  </span>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                 <div class="location">
-                   <i class="lni-map-marker"></i> New Yourk, US
-                 </div>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                  <span class="btn-full-time">Full Time</span>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                  <span class="btn-apply">Apply Now</span>
-                </div>
-              </div>
-            </a>
-            <a class="job-listings" href="job-details.html">
-              <div class="row">
-                <div class="col-lg-4 col-md-4 col-xs-12">
-                  <div class="job-company-logo">
-                    <img src="assets/img/features/img4.png" alt="">
-                  </div>
-                  <div class="job-details">
-                    <h3>App Developer</h3>
-                    <span class="company-neme">
-                      AmazeSoft
-                    </span>
-                  </div>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-center">
-                  <span class="btn-open">
-                    7 Open Jobs
-                  </span>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                 <div class="location">
-                   <i class="lni-map-marker"></i> New Yourk, US
-                 </div>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                  <span class="btn-full-time">Full Time</span>
-                </div>
-                <div class="col-lg-2 col-md-2 col-xs-12 text-right">
-                  <span class="btn-apply">Apply Now</span>
-                </div>
-              </div>
-            </a>
+            @endforeach   
           </div>
           <div class="col-12 text-center mt-4">
-            <a href="#" class="btn btn-common">Load more listing</a>
+            <a href="{{route('jobs')}}" class="btn btn-common">Load more listing</a>
           </div>
         </div>
       </div>
@@ -498,7 +425,7 @@
                 <h5>I'm</h5>
                 <h3>Recruiter</h3>
                 <p>Post a job to tell us about your project. We'll quickly match you with <br> the right freelancers find place best.</p>
-                <a href="#" class="btn btn-border-filled">Post a Job</a>
+                <a href="{{route('postJob')}}" class="btn btn-border-filled">Post a Job</a>
               </div>
               <div class="img-thumb">
                 <i class="lni-users"></i>
@@ -511,7 +438,7 @@
                 <h5>I'm</h5>
                 <h3>Jobseeker!</h3>
                 <p>Post a job to tell us about your project. We'll quickly match you with <br> the right freelancers find place best.</p>
-                <a href="#" class="btn btn-border-filled">Browser Jobs</a>
+                <a href="{{route('jobs')}}" class="btn btn-border-filled">Browser Jobs</a>
               </div>
               <div class="img-thumb">
                 <i class="lni-leaf"></i>
@@ -524,7 +451,7 @@
     <!-- Apply Us Section End -->
 
     <!-- Start Pricing Table Section -->
-    <div id="pricing" class="section">
+    <!-- <div id="pricing" class="section">
       <div class="container">
         <div class="section-header">  
           <h2 class="section-title">Pricing Plan</h2>
@@ -600,7 +527,7 @@
 
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- End Pricing Table Section -->
 
     <!-- Counter Section Start -->
@@ -656,72 +583,10 @@
     </section>
     <!-- Counter Section End --> 
 
-    <!-- Blog Section -->
-    <section id="blog" class="section">
-      <!-- Container Starts -->
-      <div class="container">
-        <div class="section-header">  
-          <h2 class="section-title">Blog Post</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit ellentesque dignissim quam et <br> metus effici turac fringilla lorem facilisis.</p>      
-        </div>
-        <div class="row">
-          <div class="col-lg-4 col-md-6 col-xs-12 blog-item">
-            <!-- Blog Item Starts -->
-            <div class="blog-item-wrapper">
-              <div class="blog-item-img">
-                <a href="single-post.html">
-                  <img src="assets/img/blog/img1.jpg" alt="">
-                </a>              
-              </div>
-              <div class="blog-item-text"> 
-                <h3><a href="single-post.html">Tips to write an impressive resume online for beginner</a></h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore praesentium asperiores ad vitae.</p>
-              </div>
-              <a class="readmore" href="#">Read More</a>
-            </div>
-            <!-- Blog Item Wrapper Ends-->
-          </div>
-
-          <div class="col-lg-4 col-md-6 col-xs-12 blog-item">
-            <!-- Blog Item Starts -->
-            <div class="blog-item-wrapper">
-              <div class="blog-item-img">
-                <a href="single-post.html">
-                  <img src="assets/img/blog/img2.jpg" alt="">
-                </a>              
-              </div>
-              <div class="blog-item-text"> 
-                <h3><a href="single-post.html">Let's explore 5 cool new features in JobBoard theme</a></h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore praesentium asperiores ad vitae.</p>
-              </div>
-              <a class="readmore" href="#">Read More</a>
-            </div>
-            <!-- Blog Item Wrapper Ends-->
-          </div>
-
-          <div class="col-lg-4 col-md-6 col-xs-12 blog-item">
-            <!-- Blog Item Starts -->
-            <div class="blog-item-wrapper">
-              <div class="blog-item-img">
-                <a href="single-post.html">
-                  <img src="assets/img/blog/img3.jpg" alt="">
-                </a>              
-              </div>
-              <div class="blog-item-text"> 
-                <h3><a href="single-post.html">How to convince recruiters and get your dream job</a></h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore praesentium asperiores ad vitae.</p>
-              </div>
-              <a class="readmore" href="#">Read More</a>
-            </div>
-            <!-- Blog Item Wrapper Ends-->
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- blog Section End -->
+   
 
     <!-- Subcribe Section Start -->
-    <div id="subscribe" class="section bg-cyan">
+   <!--  <div id="subscribe" class="section bg-cyan">
       <div class="container">
         <div class="row">
           <div class="col-lg-6 col-md-6 col-xs-12">
@@ -751,6 +616,6 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- Subcribe Section End -->
 @endsection
