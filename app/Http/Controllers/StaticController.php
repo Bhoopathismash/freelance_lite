@@ -59,10 +59,14 @@ class StaticController extends Controller
         }
         $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(10);
 
-        return view('job.job_list',compact('jobs','category'));
+        if($request->ajax()) {
+            return response()->json(['status' => true, 'data' => ['jobs' => $jobs, 'category' => $category] ], 200);
+        }else{
+            return view('job.job_list',compact('jobs','category'));
+        }
     }
 
-    public function viewPost($id)
+    public function viewPost($id, Request $request)
     {
         $user=Auth::user();
         
@@ -78,7 +82,12 @@ class StaticController extends Controller
         }
         $user_bid_packages=$user_bid_packages->first();
 
-        return view('job.view_post_job',compact('user','job','category','user_bid_packages'));
+        if($request->ajax()) {
+            return response()->json(['status' => true, 'data' => ['user' => $user, 'jobs' => $job, 'category' => $category, 'user_bid_packages' => $user_bid_packages] ], 200);
+        }else{
+            return view('job.view_post_job',compact('user','job','category','user_bid_packages'));
+        }
+
     }
 
     public function about()

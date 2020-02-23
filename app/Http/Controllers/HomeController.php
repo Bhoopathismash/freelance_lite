@@ -32,43 +32,60 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         $user=Auth::user();
         $user_id=$user->id;        
 
         $user_bid_packages=UserBidPackages::where('user_id',$user_id)->where('status',1)->where('balance_bids','>',0)->first();
-        
-        if(!$user_bid_packages){
-            return redirect('/package')->with('flash_error','Your biding limit are over, Kindly update your package for further biding...');
-        }
 
-        return view('work_dashboard');
+        if($request->ajax()) {
+            return response()->json(['status' => true, 'data' => ['user' => $user, 'user_bid_packages' => $user_bid_packages] ], 200);
+        }else{    
+            if(!$user_bid_packages){
+                return redirect('/package')->with('flash_error','Your biding limit are over, Kindly update your package for further biding...');
+            }
+            return view('dashboard');
+        }
     }
 
-    public function package()
+    public function package(Request $request)
     {
         $user=Auth::user();
         $bid_packages=BidPackages::orderBy('sort','asc')->get();
         $user_bid_packages=UserBidPackages::where('user_id',$user->id)->where('status',1)->where('balance_bids','>',0)->first();
         //dd($user_bid_packages);
-        return view('packages',compact('user','bid_packages','user_bid_packages'));
+
+        if($request->ajax()) {
+            return response()->json(['status' => true, 'data' => ['user' => $user, 'bid_packages' => $bid_packages, 'user_bid_packages' => $user_bid_packages] ], 200);
+                
+        }else{
+            return view('packages',compact('user','bid_packages','user_bid_packages'));
+        }
     }
 
-    public function userPackage($id)
+    public function userPackage($id, Request $request)
     {
         $user=Auth::user();
         $bid_packages=BidPackages::get();
         //dd($bid_packages);
-        return view('packages',compact('user','bid_packages'));
+        if($request->ajax()) {
+            return response()->json(['status' => true, 'data' => ['user' => $user, 'bid_packages' => $bid_packages] ], 200);
+        }else{    
+            return view('packages',compact('user','bid_packages'));
+        }
     }
 
-    public function profile()
+    public function profile(Request $request)
     {
         $user=Auth::user();
         $user_bid_packages=UserBidPackages::where('user_id',$user->id)->where('status',1)->with('bidPackage')->first();
         //dd($user_bid_packages);
-        return view('profile',compact('user','user_bid_packages'));
+        if($request->ajax()) {
+            return response()->json(['status' => true, 'data' => ['user' => $user, 'user_bid_packages' => $user_bid_packages] ], 200);
+        }else{ 
+            return view('profile',compact('user','user_bid_packages'));
+        }
     }
 
     public function profileUpdate(Request $request)
@@ -88,11 +105,18 @@ class HomeController extends Controller
             }
             $user->save();
 
-            return back()->with('flash_success','Profile updated successfully');
+            if($request->ajax()) {
+                return response()->json(['status' => true, 'data' => ['msg' => 'Profile updated successfully'] ], 200);
+            }else{ 
+                return back()->with('flash_success','Profile updated successfully');
+            }
 
         }catch(Exception $e){
-
-            return back()->with('flash_error','Something went wrong');
+            if($request->ajax()) {
+                return response()->json(['error' => trans('api.something_went_wrong')], 500);
+            }else{
+                return back()->with('flash_error','Something went wrong');
+            }
         }
     }
 
@@ -111,21 +135,27 @@ class HomeController extends Controller
             if($request->current_password!=$request->password){
                 $User->password = bcrypt($request->password);
                 $User->save();
-
-                $user_email=$User->email; 
-                //Mail::to($user_email)->send(new Changepasswordalert($user_email));
-
-                //return back()->with('flash_success', trans('user.profiles.pass_updated'));
-                //Auth::logout();
-                \Session::flash('flash_success',trans('user.profiles.pass_updated'));
-                return redirect('/security');
+                
+                if($request->ajax()) {
+                    return response()->json(['status' => true, 'data' => ['msg' => trans('user.profiles.pass_updated')] ], 200);
+                }else{ 
+                     return back()->with('flash_success',trans('user.profiles.pass_updated'));
+                }
 
             } else {
-                return back()->with('flash_error', trans('user.profiles.same'));
+                if($request->ajax()) {
+                    return response()->json(['status' => false, 'data' => ['msg' => trans('user.profiles.same')] ]);
+                }else{ 
+                    return back()->with('flash_error', trans('user.profiles.same'));
+                }
             }
 
         } else {
-            return back()->with('flash_error', trans('user.profiles.current_wrong_pwd'));
+            if($request->ajax()) {
+                return response()->json(['status' => false, 'data' => ['msg' => trans('user.profiles.current_wrong_pwd')] ]);
+            }else{ 
+                return back()->with('flash_error', trans('user.profiles.current_wrong_pwd'));
+            }
         }
     }    
 
@@ -149,7 +179,11 @@ class HomeController extends Controller
         }
         $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(15);
         
-        return view('job.job_list',compact('jobs','category'));
+        if($request->ajax()) {
+            return response()->json(['status' => true, 'data' => ['jobs' => $jobs, 'category' => $category] ], 200);
+        }else{
+            return view('job.job_list',compact('jobs','category'));
+        }
     }
 
     public function myJobs(Request $request){
@@ -172,13 +206,22 @@ class HomeController extends Controller
         }
         $jobs=$jobs->orderBy('created_at', 'DESC')->paginate(10);
         
-        return view('job.job_list',compact('jobs','category'));
+        if($request->ajax()) {
+            return response()->json(['status' => true, 'data' => ['jobs' => $jobs, 'category' => $category] ], 200);
+        }else{
+            return view('job.job_list',compact('jobs','category'));
+        }    
     }
 
-    public function postJob()
+    public function postJob(Request $request)
     {
         $category=JobCategory::where('status',1)->get();
-        return view('job.post_job',compact('category'));
+
+        if($request->ajax()) {
+            return response()->json(['status' => true, 'data' => ['category' => $category] ], 200);
+        }else{
+            return view('job.post_job',compact('category'));
+        }    
     }
 
     public function postJobStore(Request $request)
@@ -200,9 +243,10 @@ class HomeController extends Controller
             $job->user_id=$user_id;
             $job->job_title=$request->job_title;
             $job->category_id=$request->category_id;
+            $job->budget=$request->budget;
             $job->job_tags=$request->job_tags;
             $job->description=$request->job_description;            
-            $job->closing_date=date('Y-m-d',strtotime($request->company_name));
+            $job->closing_date=date('Y-m-d',strtotime($request->closing_date));
             $job->company_name=$request->company_name;
             $job->location=$request->location;
             $job->email=$request->email;
@@ -226,20 +270,31 @@ class HomeController extends Controller
                 $milestone->save();
             }
 
-            return back()->with('flash_success','Job posted successfully');
-
+            if($request->ajax()) {
+                return response()->json(['status' => false, 'data' => ['msg' => "Job posted successfully"] ], 200);
+            }else{ 
+                return back()->with('flash_success','Job posted successfully');
+            }
         }catch(Exception $e){
-
-            return back()->with('flash_error','Something went wrong');
+            if($request->ajax()) {
+                return response()->json(['error' => trans('api.something_went_wrong')], 500);
+            }else{
+                return back()->with('flash_error', trans('api.something_went_wrong'));
+            }
         }
     }
 
-    public function editPost($id)
+    public function editPost($id, Request $request)
     {
         $job=PostJob::where('id',$id)->with('jobFiles')->with('milestone')->first();
         //dd($job);
         $category=JobCategory::get();
-        return view('job.edit_post_job',compact('job','category'));
+
+        if($request->ajax()) {
+            return response()->json(['status' => true, 'data' => ['jobs' => $jobs, 'category' => $category] ], 200);
+        }else{            
+            return view('job.edit_post_job',compact('job','category'));
+        }
     }
 
     public function postJobUpdate(Request $request,$id)
@@ -290,8 +345,11 @@ class HomeController extends Controller
                 $milestone->description=$request->description[$key];
                 $milestone->save();
             }
-
-            return back()->with('flash_success','Job posted successfully');
+            if($request->ajax()) {
+                return response()->json(['status' => true, 'data' => ['msg' => 'Job posted successfully']], 200);
+            }else{
+                return back()->with('flash_success','Job posted successfully');
+            }    
 
         }catch(Exception $e){
             return back()->with('flash_error','Something went wrong');
@@ -326,8 +384,13 @@ class HomeController extends Controller
             $bid->description=$request->description;
             $bid->status=0;
             $bid->save();
-            
-            return back()->with('flash_success','Your bid placed successfully');
+
+
+            if($request->ajax()) {
+                return response()->json(['status' => true, 'data' => ['msg' => 'Your bid placed successfully']], 200);
+            }else{            
+                return back()->with('flash_success','Your bid placed successfully');
+            }    
 
         }catch(Exception $e){
 
@@ -353,18 +416,30 @@ class HomeController extends Controller
                 $job->status=1;
                 $job->save();
                 
-                return back()->with('flash_success','Job assigned successfully');
+                if($request->ajax()) {
+                    return response()->json(['status' => true, 'data' => ['msg' => 'Job assigned successfully']], 200);
+                }else{  
+                    return back()->with('flash_success','Job assigned successfully');
+                }
+
             }else{
-                return back()->with('flash_error','Your are not allowed to do this operation');
+                if($request->ajax()) {
+                    return response()->json(['status' => true, 'data' => ['msg' => 'Your are not allowed to do this operation']]);
+                }else{  
+                    return back()->with('flash_error','Your are not allowed to do this operation');
+                }
             }
 
         }catch(Exception $e){
-
-            return back()->with('flash_error','Something went wrong');
+            if($request->ajax()) {
+                return response()->json(['status' => true, 'data' => ['msg' => 'Something went wrong']], 500);
+            }else{  
+                return back()->with('flash_error','Something went wrong');
+            }    
         }
     }
 
-    public function releaseMilestone($id)
+    public function releaseMilestone($id, Request $request)
     {
         try{
 
@@ -377,14 +452,25 @@ class HomeController extends Controller
                 $milestone->release_status=1;
                 $milestone->save();
                 
-                return back()->with('flash_success','Milestone successfully');
+                if($request->ajax()) {
+                    return response()->json(['status' => true, 'data' => ['msg' => 'Milestone released successfully']], 200);
+                }else{ 
+                    return back()->with('flash_success','Milestone released successfully');
+                }
             }else{
-                return back()->with('flash_error','Your are not allowed to do this operation');
+                if($request->ajax()) {
+                    return response()->json(['status' => true, 'data' => ['msg' => 'Your are not allowed to do this operation']]);
+                }else{ 
+                    return back()->with('flash_error','Your are not allowed to do this operation');
+                }
             }
 
         }catch(Exception $e){
-
-            return back()->with('flash_error','Something went wrong');
+            if($request->ajax()) {
+                return response()->json(['status' => true, 'data' => ['msg' => 'Something went wrong']], 500);
+            }else{ 
+                return back()->with('flash_error','Something went wrong');
+            }
         }
     }
 
@@ -405,15 +491,25 @@ class HomeController extends Controller
                 $job->assigned_to=$request->worker_id;
                 $job->status=1;
                 $job->save();
-                
-                return back()->with('flash_success','Job assigned successfully');
+                if($request->ajax()) {
+                    return response()->json(['status' => true, 'data' => ['msg' => 'Job assigned successfully']], 200);
+                }else{ 
+                    return back()->with('flash_success','Job assigned successfully');
+                }
             }else{
-                return back()->with('flash_error','Your are not allowed to do this operation');
+                if($request->ajax()) {
+                    return response()->json(['status' => false, 'data' => ['msg' => 'Your are not allowed to do this operation']], 200);
+                }else{ 
+                    return back()->with('flash_error','Your are not allowed to do this operation');
+                }
             }
 
         }catch(Exception $e){
-
-            return back()->with('flash_error','Something went wrong');
+            if($request->ajax()) {
+                return response()->json(['status' => false, 'data' => ['msg' => 'Something went wrong']], 500);
+            }else{ 
+                return back()->with('flash_error','Something went wrong');
+            }
         }
     }
 
