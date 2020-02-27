@@ -114,6 +114,7 @@ class RegisterController extends Controller
         $user_bid_packages->total_bids=$bid_package->no_of_bids;
         $user_bid_packages->used_bids=0;
         $user_bid_packages->balance_bids=$bid_package->no_of_bids;
+        $user_bid_packages->payment_id="Free Package";
         $user_bid_packages->status=1;
         $user_bid_packages->save();            
 
