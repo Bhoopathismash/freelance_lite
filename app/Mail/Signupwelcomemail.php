@@ -29,6 +29,6 @@ class Signupwelcomemail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.signupwelcomemail')->subject('[Token] Please verify your registration.')->with(['data'=>$this->data]);
+        return $this->view('emails.signupwelcomemail')->subject('Please verify your registration.')->with(['data'=>$this->data])->from('info@setetres.com');
     }
 }
