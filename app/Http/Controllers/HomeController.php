@@ -536,6 +536,7 @@ class HomeController extends Controller
 
             $chat=new Chat; 
             $chat->post_job_id=$post_id;
+            $chat->status=0;
             if($job->user_id==$user->id){
                 $chat->hirer_user_id=$user->id; 
             }else{            
